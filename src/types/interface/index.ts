@@ -29,3 +29,16 @@ export interface LoginResponse {
   data: TokenData;
   user: UserT;
 }
+
+
+
+export interface RouteT {
+  path: string;
+  element: React.ReactNode;
+  children?: ChildrenT[]
+}
+export interface ChildrenT {
+  index?: boolean;
+  path?: string;
+  element: React.ReactNode
+}

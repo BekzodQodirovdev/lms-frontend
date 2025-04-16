@@ -1,28 +1,34 @@
+import { lazy } from "react";
 import RoleChecker from "../components/RoleChecker";
-import Login from "../pages/auth/login";
-import Dashboard from "../pages/dashboard";
-interface RouteT {
-    path: string;
-    element: React.ReactNode;
-    children?: ChildrenT[];
-}
-interface ChildrenT {
-    index?: boolean;
-    path?: string;
-    element: React.ReactNode;
-}
+import { RouteT } from "../types/interface";
+import { UserRole } from "../types/enum";
+import { MainLayout } from "../pages/admin/admin-layout";
+
+const Login = lazy(() => import("../pages/auth/login"));
+// const Dashboard = lazy(() => import("../pages/dashboard"));
+
 export const routes: RouteT[] = [
     {
         path: "/login",
         element: <Login />,
     },
     {
-        path: "/",
-        element: <RoleChecker roles={["ADMIN", "TEACHER"]} />,
+        path: "/admin",
+        element: <RoleChecker roles={[UserRole.ADMIN]} />,
         children: [
             {
                 index: true,
-                element: <Dashboard />,
+                element: <MainLayout />,
+            },
+        ],
+    },
+    {
+        path: "/teacher",
+        element: <RoleChecker roles={[UserRole.TEACHER]} />,
+        children: [
+            {
+                index: true,
+                element: <MainLayout />,
             },
         ],
     },

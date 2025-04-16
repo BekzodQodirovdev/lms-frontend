@@ -3,23 +3,35 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { LoginT, LoginResponse } from "../../types/interface";
 import useLogin from "./mutation/use-login";
 import { Button, Form, FormProps, Input, message, Typography } from "antd";
+import { SaveCookie } from "../../config/cookie";
+import { CookiesEnum, UserRole } from "../../types/enum";
 
 const Login = () => {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
-    const { setUser } = useAuthStore((store) => store);
+    const { logIn } = useAuthStore((store) => store);
 
     const { mutate, isPending } = useLogin();
 
     const loginHandler: FormProps<LoginT>["onFinish"] = (data) => {
         mutate(data, {
             onSuccess(data: LoginResponse) {
-                setUser(data.user);
+                SaveCookie(
+                    CookiesEnum.REFRESH_TOKEN,
+                    JSON.stringify(data.data.refreshToken),
+                    data.data.refresh_token_expire
+                );
+                logIn({ user: data.user, data: data.data });
                 messageApi.success("Success");
-                navigate("/");
+                if (data.user.role === UserRole.ADMIN) {
+                    navigate("/admin");
+                } else if (data.user.role === UserRole.TEACHER) {
+                    navigate("/teacher");
+                }
             },
             onError(error: any) {
-                messageApi.error(error?.response?.data?.message);
+                console.log("error: ", error);
+                messageApi.error(error?.response?.statusText);
             },
         });
     };

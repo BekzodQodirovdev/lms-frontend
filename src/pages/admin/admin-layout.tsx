@@ -1,0 +1,123 @@
+import { useState } from "react";
+import {
+    UserOutlined,
+    TeamOutlined,
+    BookOutlined,
+    SettingOutlined,
+    LogoutOutlined,
+    HomeOutlined,
+    BellOutlined,
+} from "@ant-design/icons";
+import { Layout, Menu, Input, Avatar, Typography, Space, Button } from "antd";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.svg";
+import { useAuthStore } from "../../store/useAuthStore";
+
+const { Header, Sider, Content } = Layout;
+const { Text } = Typography;
+
+export const MainLayout = () => {
+    const [collapsed, setCollapsed] = useState(false);
+    const navigate = useNavigate();
+    const { logOut } = useAuthStore();
+
+    const logOutHandle = () => {
+        logOut();
+        navigate("/login");
+    };
+
+    return (
+        <Layout style={{ minHeight: "100vh" }}>
+            <Sider
+                width={220}
+                theme="light"
+                collapsible
+                collapsed={collapsed}
+                onCollapse={setCollapsed}
+            >
+                <div style={{ textAlign: "center", padding: "16px" }}>
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        style={{ maxWidth: "100%", height: "32px" }}
+                    />
+                </div>
+                <Menu
+                    mode="inline"
+                    defaultSelectedKeys={["1"]}
+                    style={{ borderRight: 0 }}
+                >
+                    <Menu.Item key="1" icon={<HomeOutlined />}>
+                        <Link to={"/admin"}>Asosiy</Link>
+                    </Menu.Item>
+                    <Menu.Item key="2" icon={<UserOutlined />}>
+                        <Link to={"/admin/students"}>O'quvchilar</Link>
+                    </Menu.Item>
+                    <Menu.Item key="3" icon={<TeamOutlined />}>
+                        <Link to={"/admin/teachers"}>O'qituvchilar</Link>
+                    </Menu.Item>
+                    <Menu.Item key="4" icon={<BookOutlined />}>
+                        <Link to={"/admin/groups"}>Guruhlar</Link>
+                    </Menu.Item>
+                    <Menu.Item key="5" icon={<TeamOutlined />}>
+                        <Link to={"/admin/courses"}>Kurslar</Link>
+                    </Menu.Item>
+                    <Menu.Item key="7" icon={<SettingOutlined />}>
+                        <Link to={"/settings"}>Sozlamalar</Link>
+                    </Menu.Item>
+                    <Menu.Item
+                        key="8"
+                        onClick={logOutHandle}
+                        icon={<LogoutOutlined />}
+                        danger
+                    >
+                        Chiqish
+                    </Menu.Item>
+                </Menu>
+            </Sider>
+            <Layout>
+                <Header
+                    style={{
+                        background: "#fff",
+                        padding: "0 24px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        height: 64,
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+                    }}
+                >
+                    <Input.Search
+                        placeholder="Qidiruv tizimi..."
+                        style={{ maxWidth: 300 }}
+                        allowClear
+                    />
+                    <Space>
+                        <Button shape="circle">
+                            <BellOutlined style={{ fontSize: 20 }} />
+                        </Button>
+
+                        <Avatar icon={<UserOutlined />} />
+                        <div>
+                            <Text strong>Ruslan Mirzaev</Text>
+                            <br />
+                            <Text type="secondary" style={{ fontSize: 12 }}>
+                                Foydalanuvchi
+                            </Text>
+                        </div>
+                    </Space>
+                </Header>
+                <Content
+                    style={{
+                        margin: "24px 16px",
+                        padding: 24,
+                        background: "#fff",
+                    }}
+                >
+                    <Typography.Title level={4}>Asosiy bo’lim</Typography.Title>
+                    <Outlet />
+                </Content>
+            </Layout>
+        </Layout>
+    );
+};
