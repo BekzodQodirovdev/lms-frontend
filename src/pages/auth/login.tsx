@@ -30,7 +30,6 @@ const Login = () => {
                 }
             },
             onError(error: any) {
-                console.log("error: ", error);
                 messageApi.error(error?.response?.statusText);
             },
         });

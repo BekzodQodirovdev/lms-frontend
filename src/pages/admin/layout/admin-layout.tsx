@@ -10,8 +10,8 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, Input, Avatar, Typography, Space, Button } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.svg";
-import { useAuthStore } from "../../store/useAuthStore";
+import logo from "../../../assets/logo.svg";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -107,14 +107,7 @@ export const MainLayout = () => {
                         </div>
                     </Space>
                 </Header>
-                <Content
-                    style={{
-                        margin: "24px 16px",
-                        padding: 24,
-                        background: "#fff",
-                    }}
-                >
-                    <Typography.Title level={4}>Asosiy bo’lim</Typography.Title>
+                <Content>
                     <Outlet />
                 </Content>
             </Layout>
