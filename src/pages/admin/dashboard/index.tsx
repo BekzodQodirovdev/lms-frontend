@@ -32,7 +32,7 @@ const dataSource = [
         avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
     {
-        key: "3",
+        key: "4",
         name: "Sultonov Shokirjon Tursinjon o’g’li",
         dob: "15.05.1996",
         gender: "male",
@@ -41,7 +41,7 @@ const dataSource = [
         avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
     {
-        key: "3",
+        key: "5",
         name: "Sultonov Shokirjon Tursinjon o’g’li",
         dob: "15.05.1996",
         gender: "male",
@@ -50,7 +50,7 @@ const dataSource = [
         avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
     {
-        key: "3",
+        key: "6",
         name: "Sultonov Shokirjon Tursinjon o’g’li",
         dob: "15.05.1996",
         gender: "male",
@@ -59,7 +59,52 @@ const dataSource = [
         avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
     {
-        key: "3",
+        key: "7",
+        name: "Sultonov Shokirjon Tursinjon o’g’li",
+        dob: "15.05.1996",
+        gender: "male",
+        contact: "+998 (93) 123-45-67",
+        address: "Toshkent. Sentr",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        key: "8",
+        name: "Sultonov Shokirjon Tursinjon o’g’li",
+        dob: "15.05.1996",
+        gender: "male",
+        contact: "+998 (93) 123-45-67",
+        address: "Toshkent. Sentr",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        key: "9",
+        name: "Sultonov Shokirjon Tursinjon o’g’li",
+        dob: "15.05.1996",
+        gender: "male",
+        contact: "+998 (93) 123-45-67",
+        address: "Toshkent. Sentr",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        key: "10",
+        name: "Sultonov Shokirjon Tursinjon o’g’li",
+        dob: "15.05.1996",
+        gender: "male",
+        contact: "+998 (93) 123-45-67",
+        address: "Toshkent. Sentr",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        key: "11",
+        name: "Sultonov Shokirjon Tursinjon o’g’li",
+        dob: "15.05.1996",
+        gender: "male",
+        contact: "+998 (93) 123-45-67",
+        address: "Toshkent. Sentr",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        key: "12",
         name: "Sultonov Shokirjon Tursinjon o’g’li",
         dob: "15.05.1996",
         gender: "male",
@@ -72,6 +117,7 @@ const dataSource = [
 import CategoryMenuIcon from "../../../assets/menu.icon.svg";
 import { StatistikaCard } from "./components/StatistikaCard";
 import { TodayArrivedStudentsCard } from "./components/TodayArrivedStudentsCard";
+import ChildrenAgeStats from "./components/ChildStatistika";
 
 const items: MenuProps["items"] = [
     {
@@ -115,7 +161,7 @@ const Dashboard = () => {
             </Col>
             <Col
                 style={{
-                    padding: "40px 20px",
+                    padding: "30px 20px 0 20px",
                     fontFamily: "var(--font-family)",
                     display: "flex",
                     flexDirection: "column",
@@ -211,75 +257,39 @@ const Dashboard = () => {
                         >
                             <Row
                                 style={{
+                                    display: "grid",
+                                    gridTemplateColumns:
+                                        "50px 1.5fr 1fr 100px 1.5fr 1.5fr",
+                                    alignItems: "center",
+                                    padding: "20px 15px",
                                     background: "var(--oq-rang-1)",
                                     borderRadius: "4px",
-                                    padding: "20px 15px",
-                                    gap: "38px",
                                 }}
                             >
-                                <Row style={{ gap: "20px", width: "300px" }}>
-                                    {["#", "O’qituvchilar F.I.O"].map(
-                                        (item, index) => (
-                                            <Title
-                                                key={index}
-                                                level={2}
-                                                style={{
-                                                    fontWeight: 500,
-                                                    fontSize: "16px",
-                                                    color: "var(--filter-matn-rang-1)",
-                                                    fontFamily:
-                                                        "var(--font-family)",
-                                                    margin: 0,
-                                                }}
-                                            >
-                                                {item}
-                                            </Title>
-                                        )
-                                    )}
-                                </Row>
-                                <Row style={{ gap: "99px" }}>
-                                    <Row style={{ gap: "48px" }}>
-                                        {["Tug’ilgan sana", "Jinsi"].map(
-                                            (item, index) => (
-                                                <Title
-                                                    key={index}
-                                                    level={2}
-                                                    style={{
-                                                        fontWeight: 500,
-                                                        fontSize: "16px",
-                                                        color: "var(--filter-matn-rang-1)",
-                                                        fontFamily:
-                                                            "var(--font-family)",
-                                                        margin: 0,
-                                                    }}
-                                                >
-                                                    {item}
-                                                </Title>
-                                            )
-                                        )}
-                                    </Row>
-                                    <Row style={{ gap: "88px" }}>
-                                        {["Kontakt", "Yashash manzil"].map(
-                                            (item, index) => (
-                                                <Title
-                                                    key={index}
-                                                    level={2}
-                                                    style={{
-                                                        fontWeight: 500,
-                                                        fontSize: "16px",
-                                                        color: "var(--filter-matn-rang-1)",
-                                                        fontFamily:
-                                                            "var(--font-family)",
-                                                        margin: 0,
-                                                    }}
-                                                >
-                                                    {item}
-                                                </Title>
-                                            )
-                                        )}
-                                    </Row>
-                                </Row>
+                                {[
+                                    "#",
+                                    "O’qituvchilar F.I.O",
+                                    "Tug’ilgan sana",
+                                    "Jinsi",
+                                    "Kontakt",
+                                    "Yashash manzil",
+                                ].map((item, index) => (
+                                    <Title
+                                        key={index}
+                                        level={2}
+                                        style={{
+                                            fontWeight: 500,
+                                            fontSize: "16px",
+                                            color: "var(--filter-matn-rang-1)",
+                                            fontFamily: "var(--font-family)",
+                                            margin: 0,
+                                        }}
+                                    >
+                                        {item}
+                                    </Title>
+                                ))}
                             </Row>
+
                             <Col
                                 style={{
                                     display: "flex",
@@ -294,6 +304,7 @@ const Dashboard = () => {
                             >
                                 {dataSource.map((items, index) => (
                                     <UserCard
+                                        key={index}
                                         id={index + 1}
                                         avatar={items.avatar}
                                         fullname={items.name}
@@ -325,6 +336,7 @@ const Dashboard = () => {
                             border: "1px solid var(--qidiruv-tizimi-1)",
                             borderRadius: "4px",
                             width: "37%",
+                            height: "490px",
                         }}
                     >
                         <Row
@@ -415,7 +427,7 @@ const Dashboard = () => {
                                     display: "flex",
                                     flexDirection: "column",
                                     gap: "20px",
-                                    height: "190px",
+                                    height: "350px",
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     paddingRight: "10px",
@@ -425,12 +437,74 @@ const Dashboard = () => {
                                 {dataSource.map((items, index) => (
                                     <TodayArrivedStudentsCard
                                         id={index + 1}
+                                        key={index}
                                         avatar={items.avatar}
                                         fullname={items.name}
                                         gender={items.gender}
                                     />
                                 ))}
                             </Col>
+                        </Col>
+                    </Col>
+                    <Col
+                        style={{
+                            background: "var(--oq-rang-1)",
+                            border: "1px solid var(--qidiruv-tizimi-1)",
+                            borderRadius: "4px",
+                            width: "37%",
+                            marginLeft: "20px",
+                        }}
+                    >
+                        <Row
+                            style={{
+                                padding: "20px 20px 10px 20px",
+                                borderBottom:
+                                    "2px solid  var(--qidiruv-tizimi-1)",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            <Title
+                                level={2}
+                                style={{
+                                    fontWeight: 400,
+                                    fontSize: "26px",
+                                    color: "var(--matn-rang-1)",
+                                    margin: 0,
+                                    maxWidth: "200px",
+                                    fontFamily: "var(--font-family)",
+                                }}
+                            >
+                                Bolalarni yosh bo’yicha statiskasi
+                            </Title>
+                            <Col>
+                                <Row
+                                    style={{
+                                        alignItems: "center",
+                                        gap: "5px",
+                                    }}
+                                >
+                                    <Title
+                                        level={2}
+                                        style={{
+                                            fontWeight: 400,
+                                            fontSize: "50px",
+                                            color: "var(--breand-rang-1)",
+                                            margin: 0,
+                                            fontFamily: "var(--font-family)",
+                                        }}
+                                    >
+                                        100%
+                                    </Title>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Col
+                            style={{
+                                display: "flex",
+                                gap: "50px",
+                            }}
+                        >
+                            <ChildrenAgeStats />
                         </Col>
                     </Col>
                 </Row>

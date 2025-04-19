@@ -2,6 +2,7 @@ import { Col, Row } from "antd";
 import IncomeIcon from "../../../../assets/calendar-icon.svg";
 import CalendarIcon from "../../../../assets/calendar-icon.svg";
 import Title from "antd/es/typography/Title";
+import bgImage from "../../../../assets/bg-card.png";
 
 export const StatistikaCard = () => {
     return (
@@ -13,6 +14,10 @@ export const StatistikaCard = () => {
                 border: " 1px solid var(--qidiruv-tizimi-1)",
                 borderRadius: "4px",
                 width: "full",
+                backgroundImage: `url(${bgImage})`,
+                backgroundPosition: "top 19px right 15px",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "100px",
             }}
         >
             <Col

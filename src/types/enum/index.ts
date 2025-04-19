@@ -8,5 +8,5 @@ export enum UserRole {
 export enum CookiesEnum {
     ACCESS_TOKEN = "accessToken",
     REFRESH_TOKEN = "refreshToken",
-    LOGIN_USER = "login_user",
+    USER = "user",
 }

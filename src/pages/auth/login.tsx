@@ -3,24 +3,32 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { LoginT, LoginResponse } from "../../types/interface";
 import useLogin from "./mutation/use-login";
 import { Button, Form, FormProps, Input, message, Typography } from "antd";
-import { SaveCookie } from "../../config/cookie";
+import { GetCookie } from "../../config/cookie";
 import { CookiesEnum, UserRole } from "../../types/enum";
+import { useEffect } from "react";
 
 const Login = () => {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
     const { logIn } = useAuthStore((store) => store);
-
     const { mutate, isPending } = useLogin();
+
+    useEffect(() => {
+        const access = GetCookie(CookiesEnum.ACCESS_TOKEN);
+        const refReshToken = GetCookie(CookiesEnum.REFRESH_TOKEN);
+        const user = GetCookie(CookiesEnum.USER);
+        if (access && refReshToken && user) {
+            if (user.role === UserRole.ADMIN) {
+                navigate("/admin");
+            } else if (user.role === UserRole.TEACHER) {
+                navigate("/teacher");
+            }
+        }
+    }, []);
 
     const loginHandler: FormProps<LoginT>["onFinish"] = (data) => {
         mutate(data, {
             onSuccess(data: LoginResponse) {
-                SaveCookie(
-                    CookiesEnum.REFRESH_TOKEN,
-                    JSON.stringify(data.data.refreshToken),
-                    data.data.refresh_token_expire
-                );
                 logIn({ user: data.user, data: data.data });
                 messageApi.success("Success");
                 if (data.user.role === UserRole.ADMIN) {

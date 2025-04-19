@@ -8,7 +8,7 @@ import {
     HomeOutlined,
     BellOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Input, Avatar, Typography, Space, Button } from "antd";
+import { Layout, Menu, Input, Avatar, Typography, Button } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo.svg";
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -92,22 +92,41 @@ export const MainLayout = () => {
                         style={{ maxWidth: 300 }}
                         allowClear
                     />
-                    <Space>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 16,
+                        }}
+                    >
                         <Button shape="circle">
                             <BellOutlined style={{ fontSize: 20 }} />
                         </Button>
 
                         <Avatar icon={<UserOutlined />} />
-                        <div>
+
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                lineHeight: 1,
+                            }}
+                        >
                             <Text strong>Ruslan Mirzaev</Text>
-                            <br />
                             <Text type="secondary" style={{ fontSize: 12 }}>
                                 Foydalanuvchi
                             </Text>
                         </div>
-                    </Space>
+                    </div>
                 </Header>
-                <Content>
+                <Content
+                    className="custom-scroll"
+                    style={{
+                        backgroundColor: "var(--stroka-rang-2)",
+                        overflowY: "auto",
+                        height: "calc(100vh - 65px)",
+                    }}
+                >
                     <Outlet />
                 </Content>
             </Layout>
