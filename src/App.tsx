@@ -1,7 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { routes } from "./routes";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { ChildrenT, RouteT } from "./types/interface";
+import { GetCookie } from "./config/cookie";
+import { Spin } from "antd";
 
 const renderRoutes = (routes: (RouteT | ChildrenT)[]) => {
     return routes.map((route, index) => {
@@ -18,8 +20,30 @@ const renderRoutes = (routes: (RouteT | ChildrenT)[]) => {
 };
 
 const App = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const accessToken = GetCookie("accessToken");
+        const refreshToken = GetCookie("refreshToken");
+        const user = GetCookie("user");
+        if (!accessToken && !refreshToken && !user) {
+            navigate("/login");
+        }
+    }, []);
     return (
-        <Suspense fallback={<p>loading...</p>}>
+        <Suspense
+            fallback={
+                <div
+                    style={{
+                        height: "100vh",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Spin />
+                </div>
+            }
+        >
             <Routes>{renderRoutes(routes)}</Routes>
         </Suspense>
     );

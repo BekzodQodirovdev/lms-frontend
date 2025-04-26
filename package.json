@@ -10,9 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd": "^5.11.3-alpha.0",
+    "antd": "^5.24.8",
     "axios": "^1.8.4",
     "axios-auth-refresh": "^3.3.6",
+    "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

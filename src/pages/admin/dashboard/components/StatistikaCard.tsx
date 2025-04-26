@@ -1,10 +1,21 @@
 import { Col, Row } from "antd";
-import IncomeIcon from "../../../../assets/calendar-icon.svg";
 import CalendarIcon from "../../../../assets/calendar-icon.svg";
 import Title from "antd/es/typography/Title";
 import bgImage from "../../../../assets/bg-card.png";
 
-export const StatistikaCard = () => {
+export const StatistikaCard = ({
+    title,
+    price,
+    percent,
+    sub_title,
+    svg,
+}: {
+    title: string;
+    price: string;
+    percent: string;
+    sub_title: string;
+    svg: string;
+}) => {
     return (
         <Col
             style={{
@@ -29,7 +40,7 @@ export const StatistikaCard = () => {
                     marginBottom: "5px",
                 }}
             >
-                <img width={32} height={32} src={IncomeIcon} alt="" />
+                <img width={32} height={32} src={svg} alt="" />
             </Col>
             <Title
                 level={3}
@@ -41,8 +52,7 @@ export const StatistikaCard = () => {
                     margin: 0,
                 }}
             >
-                {" "}
-                Kirimlar
+                {title}
             </Title>
             <Title
                 level={3}
@@ -55,8 +65,7 @@ export const StatistikaCard = () => {
                     marginTop: "10px",
                 }}
             >
-                {" "}
-                12 000 000 so’m
+                {price}
             </Title>
 
             <Row
@@ -74,15 +83,14 @@ export const StatistikaCard = () => {
                         margin: 0,
                     }}
                 >
-                    {" "}
-                    Kechagi kunga nisbatan{" "}
+                    {sub_title}
                     <span
                         style={{
                             fontWeight: 600,
                             color: "var(--qizil-rang-1)",
                         }}
                     >
-                        -30%
+                        {percent}
                     </span>
                 </Title>
             </Row>

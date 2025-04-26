@@ -19,22 +19,23 @@ const Login = () => {
         const user = GetCookie(CookiesEnum.USER);
         if (access && refReshToken && user) {
             if (user.role === UserRole.ADMIN) {
-                navigate("/admin");
+                navigate("/admin", { replace: true });
             } else if (user.role === UserRole.TEACHER) {
-                navigate("/teacher");
+                navigate("/teacher", { replace: true });
             }
         }
-    }, []);
+    }, [navigate]);
 
     const loginHandler: FormProps<LoginT>["onFinish"] = (data) => {
         mutate(data, {
             onSuccess(data: LoginResponse) {
+                console.log(data);
                 logIn({ user: data.user, data: data.data });
                 messageApi.success("Success");
                 if (data.user.role === UserRole.ADMIN) {
-                    navigate("/admin");
+                    navigate("/admin", { replace: true });
                 } else if (data.user.role === UserRole.TEACHER) {
-                    navigate("/teacher");
+                    navigate("/teacher", { replace: true });
                 }
             },
             onError(error: any) {

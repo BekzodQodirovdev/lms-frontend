@@ -69,10 +69,13 @@ export const UserCard = ({
                             margin: 0,
                         }}
                     >
-                        {birthDate}
+                        {birthDate.slice(0, 10)}
                     </Title>
-                    <Tag color={gender === "male" ? "green" : "red"}>
-                        {gender === "male" ? "O’g’il bola" : "Qiz bola"}
+                    <Tag
+                        color={gender === "MALE" ? "green" : "red"}
+                        style={{ marginLeft: "50px" }}
+                    >
+                        {gender === "MALE" ? "O’g’il bola" : "Qiz bola"}
                     </Tag>
                     <Title
                         level={2}
@@ -92,6 +95,7 @@ export const UserCard = ({
                             fontSize: "16px",
                             color: "#1c274c",
                             margin: 0,
+                            marginLeft: "130px",
                         }}
                     >
                         {address}

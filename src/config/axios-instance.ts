@@ -1,5 +1,5 @@
 import axios from "axios";
-import Cookie from "js-cookie";
+import { GetCookie } from "./cookie";
 // import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 export const request = axios.create({
@@ -8,7 +8,7 @@ export const request = axios.create({
 
 request.interceptors.request.use((config) => {
     if (config.url !== "/auth/refresh") {
-        const accessToken = Cookie.get("accessToken");
+        const accessToken = GetCookie("accessToken");
         if (accessToken) {
             config.headers["Authorization"] = `Bearer ${accessToken}`;
         }

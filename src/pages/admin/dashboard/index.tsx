@@ -1,8 +1,7 @@
 import { UserCard } from "./components/UserCard";
-import { Button, Col, Dropdown, MenuProps, Row } from "antd";
+import { Button, Col, Dropdown, MenuProps, Row, Spin } from "antd";
 import Title from "antd/es/typography/Title";
 import { useState } from "react";
-import "./css/style.css";
 const dataSource = [
     {
         key: "1",
@@ -118,6 +117,10 @@ import CategoryMenuIcon from "../../../assets/menu.icon.svg";
 import { StatistikaCard } from "./components/StatistikaCard";
 import { TodayArrivedStudentsCard } from "./components/TodayArrivedStudentsCard";
 import ChildrenAgeStats from "./components/ChildStatistika";
+import { useGetStatistics } from "../query/getStatistics";
+
+import incomeSvg from "../../../assets/income.svg";
+import costSvg from "../../../assets/cost.svg";
 
 const items: MenuProps["items"] = [
     {
@@ -135,7 +138,20 @@ const items: MenuProps["items"] = [
 ];
 
 const Dashboard = () => {
-    const [category, setCategory] = useState("O’qituvchilar");
+    const [category, setCategory] = useState("Hamma");
+    const { data, isLoading } = useGetStatistics(
+        "",
+        category === "Hamma"
+            ? ""
+            : category === "O’qituvchilar"
+            ? "TEACHER"
+            : category === "O’quvchilar"
+            ? "STUDENT"
+            : ""
+    );
+
+    console.log(data);
+
     return (
         <>
             <Col
@@ -203,7 +219,7 @@ const Dashboard = () => {
                                         color: "var(--breand-rang-1)",
                                     }}
                                 >
-                                    40 ta
+                                    {data?.data?.userCount ?? 0} ta
                                 </span>
                             </Title>
 
@@ -221,32 +237,31 @@ const Dashboard = () => {
                                     </Button>
                                 </Dropdown>
 
-                                {[
-                                    "O’qituvchilar",
-                                    "Guruhlar",
-                                    "Menegerlar",
-                                ].map((item, index) => (
-                                    <Button
-                                        key={index}
-                                        onClick={() => setCategory(item)}
-                                        style={{
-                                            fontWeight: 500,
-                                            padding: "0px 20px",
-                                            fontSize: "16px",
-                                            color:
-                                                category === item
-                                                    ? "var(--breand-rang-2)"
-                                                    : "var(--matn-rang-1)",
-                                            boxShadow:
-                                                category === item
-                                                    ? "2px 2px 2px 0 rgba(0, 0, 0, 0.1)"
-                                                    : "none",
-                                            background: "var(--stroka-rang-2)",
-                                        }}
-                                    >
-                                        {item}
-                                    </Button>
-                                ))}
+                                {["Hamma", "O’qituvchilar", "O’quvchilar"].map(
+                                    (item, index) => (
+                                        <Button
+                                            key={index}
+                                            onClick={() => setCategory(item)}
+                                            style={{
+                                                fontWeight: 500,
+                                                padding: "0px 20px",
+                                                fontSize: "16px",
+                                                color:
+                                                    category === item
+                                                        ? "var(--breand-rang-2)"
+                                                        : "var(--matn-rang-1)",
+                                                boxShadow:
+                                                    category === item
+                                                        ? "2px 2px 2px 0 rgba(0, 0, 0, 0.1)"
+                                                        : "none",
+                                                background:
+                                                    "var(--stroka-rang-2)",
+                                            }}
+                                        >
+                                            {item}
+                                        </Button>
+                                    )
+                                )}
                             </Row>
                         </Row>
                         <Row
@@ -290,31 +305,44 @@ const Dashboard = () => {
                                 ))}
                             </Row>
 
-                            <Col
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "15px",
-                                    height: "225px",
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    paddingRight: "10px",
-                                }}
-                                className="custom-scroll"
-                            >
-                                {dataSource.map((items, index) => (
-                                    <UserCard
-                                        key={index}
-                                        id={index + 1}
-                                        avatar={items.avatar}
-                                        fullname={items.name}
-                                        birthDate={items.dob}
-                                        gender={items.gender}
-                                        phoneNumber={items.contact}
-                                        address={items.address}
-                                    />
-                                ))}
-                            </Col>
+                            {isLoading ? (
+                                <Col
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        height: "225px",
+                                    }}
+                                >
+                                    <Spin />
+                                </Col>
+                            ) : (
+                                <Col
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "15px",
+                                        height: "225px",
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        paddingRight: "10px",
+                                    }}
+                                >
+                                    {data?.data.users.map((items, index) => (
+                                        <UserCard
+                                            key={index}
+                                            id={index + 1}
+                                            avatar={items?.images[0]?.url}
+                                            fullname={items.full_name}
+                                            birthDate={items.data_of_birth}
+                                            gender={items.gender}
+                                            phoneNumber={items.phone_number}
+                                            address={items.address}
+                                        />
+                                    ))}
+                                </Col>
+                            )}
                         </Row>
                     </Col>
                     <Col
@@ -325,8 +353,20 @@ const Dashboard = () => {
                             gap: "20px",
                         }}
                     >
-                        <StatistikaCard />
-                        <StatistikaCard />
+                        <StatistikaCard
+                            svg={incomeSvg}
+                            title={"Kirimlar"}
+                            price={`${data?.data.income.sum ?? 0} so’m`}
+                            sub_title={`Kechagi kunga nisbatan `}
+                            percent={`${data?.data.income.percent}%`}
+                        />
+                        <StatistikaCard
+                            svg={costSvg}
+                            title={"Chiqimlar"}
+                            price={`${data?.data.cost.sum ?? 0} so’m`}
+                            sub_title={`O’tgan haftaga nisbatan `}
+                            percent={`${data?.data.cost.percent}%`}
+                        />
                     </Col>
                 </Row>
                 <Row>
@@ -432,7 +472,6 @@ const Dashboard = () => {
                                     overflowX: "hidden",
                                     paddingRight: "10px",
                                 }}
-                                className="custom-scroll"
                             >
                                 {dataSource.map((items, index) => (
                                     <TodayArrivedStudentsCard
