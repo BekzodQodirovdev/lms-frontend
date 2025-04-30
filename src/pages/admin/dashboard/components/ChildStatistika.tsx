@@ -1,15 +1,18 @@
-import React from "react";
-import { Card, Row, Col, Progress, List } from "antd";
+import { Card, Row, Col, List } from "antd";
 
-const ChildrenAgeStatistics = () => {
-    // Yosh guruhlari bo'yicha ma'lumotlar
+const ChildrenAgeStatistics = ({ data }: any) => {
     const ageData = [
-        { age: "2-3 yosh", percentage: 20, color: "#722ed1" },
-        { age: "3-4 yosh", percentage: 30, color: "#eb2f96" },
-        { age: "4-5 yosh", percentage: 10, color: "#fa8c16" },
-        { age: "5-6 yosh", percentage: 20, color: "#fadb14" },
-        { age: "6-7 yosh", percentage: 10, color: "#a0d911" },
+        { age: "10-13 yosh", percentage: 0, color: "#722ed1" },
+        { age: "14-17 yosh", percentage: 0, color: "#eb2f96" },
+        { age: "18-25 yosh", percentage: 0, color: "#fa8c16" },
+        { age: "26-30 yosh", percentage: 0, color: "#fadb14" },
+        { age: "30+ yosh", percentage: 0, color: "#a0d911" },
     ];
+    let index = 0;
+    for (const key in data) {
+        ageData[index].percentage = data[key];
+        index++;
+    }
 
     // CSS bilan yaratilgan aylana diagramma
     const CircleChart = ({ data }: any) => {

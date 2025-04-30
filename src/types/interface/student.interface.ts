@@ -1,7 +1,16 @@
+import { ImagesI } from "./dashboard";
+
 export interface IGetStudentInterface {
     status: number;
     message: string;
     data: IStudetn[];
+    meta: IMeta;
+}
+
+export interface IGetOneStudentInterface {
+    status: number;
+    message: string;
+    data: IStudetn;
     meta: IMeta;
 }
 
@@ -21,7 +30,7 @@ export interface IStudetn {
     created_at: string;
     updated_at: string;
     user_id: string;
-    img_url: string;
+    images: ImagesI[];
     group_members: IGroupMember[];
     PaymentForStudent: IPaymentForStudent[];
 }
@@ -39,6 +48,7 @@ export interface IGroup {
     group_id: string;
     name: string;
     description: string;
+    start_date: string;
     course_id: string;
     teacher_id: string;
     status: string;
@@ -49,4 +59,5 @@ export interface IGroup {
 export interface IPaymentForStudent {
     type: string;
     sum: number;
+    created_at: string;
 }

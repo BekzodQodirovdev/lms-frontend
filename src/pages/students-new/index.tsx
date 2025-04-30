@@ -17,7 +17,7 @@ import {
 import Title from "antd/es/typography/Title";
 import { useNavigate } from "react-router-dom";
 import { UploadFile } from "antd/es/upload";
-import { FieldType } from "../../types/interface/studentFildT";
+import { FieldTypeStudent } from "../../types/interface/studentFildT";
 import { useState } from "react";
 import { useUploadImgStudent } from "./mutation/fileUpload";
 import { useCreateStudent } from "./mutation/useCreateStudent";
@@ -39,7 +39,7 @@ export const AddStudentForm = () => {
 
     const generateId = () => Math.random().toString(36).substring(2, 7);
 
-    const onFinish = (values: FieldType) => {
+    const onFinish = (values: FieldTypeStudent) => {
         const user = {
             img_url: fileList[0]?.url,
             full_name: `${values.firstname} ${values.lastname} ${values.surname}`,
@@ -185,7 +185,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Ism"
                             name="firstname"
                             rules={[{ required: true }]}
@@ -198,7 +198,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Familiya"
                             name="lastname"
                             rules={[{ required: true }]}
@@ -211,7 +211,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Sharif"
                             name="surname"
                             rules={[{ required: true }]}
@@ -224,7 +224,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Tug'ilgan sana"
                             name="data_of_birth"
                             rules={[{ required: true }]}
@@ -238,7 +238,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Jinsi"
                             name="gender"
                             rules={[{ required: true }]}
@@ -254,7 +254,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Manzil"
                             name="address"
                             rules={[{ required: true }]}
@@ -267,7 +267,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Telefon raqam"
                             name="phone_number"
                             rules={[{ required: true }]}
@@ -280,7 +280,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Guruh"
                             name="groupId"
                             rules={[{ required: true }]}
@@ -302,7 +302,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="To'lov turi"
                             name="paymentType"
                             rules={[{ required: true }]}
@@ -318,7 +318,7 @@ export const AddStudentForm = () => {
                     </Col>
 
                     <Col span={6}>
-                        <Form.Item<FieldType>
+                        <Form.Item<FieldTypeStudent>
                             label="Summa"
                             name="sum"
                             rules={[{ required: true }]}

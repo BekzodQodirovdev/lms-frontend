@@ -121,6 +121,7 @@ import { useGetStatistics } from "../query/getStatistics";
 
 import incomeSvg from "../../../assets/income.svg";
 import costSvg from "../../../assets/cost.svg";
+import bgImage from "../../../assets/bg-card.png";
 
 const items: MenuProps["items"] = [
     {
@@ -490,8 +491,9 @@ const Dashboard = () => {
                             background: "var(--oq-rang-1)",
                             border: "1px solid var(--qidiruv-tizimi-1)",
                             borderRadius: "4px",
-                            width: "37%",
+                            width: "38%",
                             marginLeft: "20px",
+                            marginRight: "22px",
                         }}
                     >
                         <Row
@@ -543,8 +545,65 @@ const Dashboard = () => {
                                 gap: "50px",
                             }}
                         >
-                            <ChildrenAgeStats />
+                            <ChildrenAgeStats data={data?.data.ageStats} />
                         </Col>
+                    </Col>
+                    <Col
+                        style={{
+                            padding: "15px",
+                            boxShadow: " 2px 2px 4px 0 rgba(0, 0, 0, 0.1)",
+                            background: "var(--oq-rang-1)",
+                            border: " 1px solid var(--qidiruv-tizimi-1)",
+                            borderRadius: "4px",
+                            width: "22%",
+                            backgroundImage: `url(${bgImage})`,
+                            backgroundPosition: "top 19px right 15px",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "100px",
+                            height: "169px",
+                        }}
+                    >
+                        <Col
+                            style={{
+                                border: "1px solid var(--qidiruv-tizimi-1)",
+                                borderRadius: "4px",
+                                padding: "5px 8px 4px 8px",
+                                width: "50px",
+                                marginBottom: "5px",
+                            }}
+                        >
+                            <img
+                                width={32}
+                                height={32}
+                                src={incomeSvg}
+                                alt=""
+                            />
+                        </Col>
+                        <Title
+                            level={3}
+                            style={{
+                                fontWeight: 500,
+                                fontSize: "16px",
+                                color: "var(--matn-rang-1)",
+                                fontFamily: "var(--font-family)",
+                                margin: 0,
+                            }}
+                        >
+                            Bolalar soni
+                        </Title>
+                        <Title
+                            level={3}
+                            style={{
+                                fontWeight: 500,
+                                fontSize: "26px",
+                                color: "var(--matn-rang-1)",
+                                fontFamily: "var(--font-family)",
+                                margin: 0,
+                                marginTop: "10px",
+                            }}
+                        >
+                            18 ta
+                        </Title>
                     </Col>
                 </Row>
             </Col>

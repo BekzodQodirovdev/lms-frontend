@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs";
 
-export interface FieldType {
+export interface FieldTypeStudent {
     firstname: string;
     lastname: string;
     surname: string;

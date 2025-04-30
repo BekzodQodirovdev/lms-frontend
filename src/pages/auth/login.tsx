@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const Login = () => {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
-    const { logIn } = useAuthStore((store) => store);
+    const { logIn, logOut } = useAuthStore((store) => store);
     const { mutate, isPending } = useLogin();
 
     useEffect(() => {
@@ -23,6 +23,8 @@ const Login = () => {
             } else if (user.role === UserRole.TEACHER) {
                 navigate("/teacher", { replace: true });
             }
+        } else {
+            logOut();
         }
     }, [navigate]);
 
@@ -31,7 +33,6 @@ const Login = () => {
             onSuccess(data: LoginResponse) {
                 console.log(data);
                 logIn({ user: data.user, data: data.data });
-                messageApi.success("Success");
                 if (data.user.role === UserRole.ADMIN) {
                     navigate("/admin", { replace: true });
                 } else if (data.user.role === UserRole.TEACHER) {

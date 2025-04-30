@@ -1,0 +1,19 @@
+import { request } from "../../../config/axios-instance";
+import { useMutation } from "@tanstack/react-query";
+export interface ICreateTeacherParams {
+    full_name: string;
+    username: string;
+    img_url?: string;
+    password: string;
+    phone_number: string;
+    address: string;
+    gender: string;
+    data_of_birth: string;
+}
+
+export const useCreateTeacher = () => {
+    return useMutation({
+        mutationFn: (teacherData: ICreateTeacherParams) =>
+            request.post("/teacher/createTeacher", teacherData),
+    });
+};

@@ -1,9 +1,23 @@
-import { Table, Tag, Button, Space, Avatar, Col, Spin } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+    Table,
+    Tag,
+    Button,
+    Space,
+    Col,
+    Spin,
+    Typography,
+    Image,
+    Modal,
+} from "antd";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { useNavigate } from "react-router-dom";
-import useGetAllStudent from "./service/query/useGetAllStudent";
 import { useState } from "react";
+import { ITeacher } from "../../types/interface/teachers.interface";
+import { useDeleteTeacher } from "./service/mutation/usedeleteTeacher";
+import { EyeSvg } from "../../assets/eye-svgrepo-com";
+import useGetAllTeacher from "./service/query/useGetAllTeacher";
+import { useSearchStore } from "../../store/useSearchStore";
 
 // const data = [
 //     {
@@ -23,76 +37,36 @@ import { useState } from "react";
 //         attendance: false,
 //     },
 // ];
-
-const columns = [
-    {
-        title: "#",
-        dataIndex: "key",
-        key: "key",
-    },
-    {
-        title: "Bolalar F.I.O",
-        dataIndex: "name",
-        key: "name",
-        render: (text: string) => (
-            <Space>
-                <Avatar />
-                {text}
-            </Space>
-        ),
-    },
-    {
-        title: "Tug'ilgan sana",
-        dataIndex: "birthday",
-        key: "birthday",
-    },
-    {
-        title: "Jinsi",
-        dataIndex: "gender",
-        key: "gender",
-        render: (gender: string) => (
-            <Tag color={gender === "O'g'il bola" ? "green" : "red"}>
-                {gender}
-            </Tag>
-        ),
-    },
-    {
-        title: "Gurux raqami",
-        dataIndex: "group",
-        key: "group",
-    },
-    {
-        title: "Davomat",
-        dataIndex: "attendance",
-        key: "attendance",
-        render: (attended: boolean) => (
-            <Tag color={attended ? "green" : "red"}>{attended ? "✓" : "✕"}</Tag>
-        ),
-    },
-    {
-        title: "To'lov",
-        key: "payment",
-        render: () => <Button>To'lov</Button>,
-    },
-    {
-        title: "Imkoniyatlar",
-        key: "actions",
-        render: () => (
-            <Space>
-                <Button icon={<EditOutlined />} />
-                <Button icon={<DeleteOutlined />} danger />
-            </Space>
-        ),
-    },
-];
-
+interface IFilter {
+    data_of_birth?: string;
+    gender?: string;
+    fullname?: string;
+}
 export const Teacher = () => {
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState<{
+        open: boolean;
+        user: { id: string | null; name: string | null };
+    }>({
+        open: false,
+        user: { id: null, name: null },
+    });
+    const { search } = useSearchStore();
+    const [isFilterQuery, setFilterQuery] = useState<IFilter | null>(null);
+
     const [page, setPage] = useState<number>(1);
-    const handleAddStudent = () => {
-        navigate("/admin/students/add");
+    const handleAddTeacher = () => {
+        navigate("/admin/teacher/add");
     };
-    const { data, isLoading } = useGetAllStudent(page, 10);
+    const { data, isLoading } = useGetAllTeacher(
+        page,
+        10,
+        isFilterQuery?.data_of_birth,
+        isFilterQuery?.gender,
+        search
+    );
+    const { mutate: deleteTeacher } = useDeleteTeacher();
+
     if (isLoading)
         return (
             <div
@@ -108,12 +82,97 @@ export const Teacher = () => {
         );
     console.log(data);
 
-    // const handleEditStudent = (key: string) => {
-    //     navigate(`/students/edit/${key}`);
-    // };
-    // const handleDeleteStudent = (key: string) => {
-    //     console.log(`Delete student with key: ${key}`);
-    // };
+    const handleEditTeacher = (key: string) => {
+        navigate(`/admin/teacher-detail/${key}`);
+    };
+    const handleDeleteTeacher = (id: string, name: string) => {
+        setIsModalOpen({ open: true, user: { id, name } });
+    };
+
+    const handleOk = () => {
+        console.log(isModalOpen);
+        if (isModalOpen.user.id) {
+            deleteTeacher(isModalOpen.user.id, {
+                onSuccess(data) {
+                    console.log(data);
+                },
+                onError(err) {
+                    console.log("error ", err);
+                },
+            });
+        }
+        setIsModalOpen({ open: false, user: { id: null, name: null } });
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen({ open: false, user: { id: null, name: null } });
+    };
+
+    const columns = [
+        {
+            title: "#",
+            key: "key",
+            render: (_: any, __: ITeacher, index: number) =>
+                (page - 1) * 10 + index + 1,
+        },
+        {
+            title: "O’qituvchilar F.I.O",
+            key: "full_name",
+            render: (teacher: ITeacher) => (
+                <Space>
+                    <Image
+                        src={teacher.images[0].url}
+                        alt="Img"
+                        width={36}
+                        height={36}
+                        style={{ borderRadius: "20px" }}
+                    />
+                    {teacher.full_name}
+                </Space>
+            ),
+        },
+        {
+            title: "Tug'ilgan sana",
+            dataIndex: "data_of_birth",
+            key: "data_of_birth",
+            render: (date: string) => (
+                <Typography.Text>{date.slice(0, 10)}</Typography.Text>
+            ),
+        },
+        {
+            title: "Jinsi",
+            dataIndex: "gender",
+            key: "gender",
+            render: (gender: string) => (
+                <Tag color={gender === "MALE" ? "green" : "red"}>{gender}</Tag>
+            ),
+        },
+        {
+            title: "Kontakt",
+            dataIndex: "phone_number",
+            key: "phone_number",
+        },
+        {
+            title: "Imkoniyatlar",
+            key: "actions",
+            render: (data: ITeacher) => (
+                <Space>
+                    <Button
+                        icon={<EyeSvg />}
+                        onClick={() => handleEditTeacher(data.user_id)}
+                    />
+                    <Button
+                        icon={<DeleteOutlined />}
+                        onClick={() =>
+                            handleDeleteTeacher(data.user_id, data.full_name)
+                        }
+                        danger
+                    />
+                </Space>
+            ),
+        },
+    ];
+
     return (
         <div>
             <Col
@@ -123,7 +182,7 @@ export const Teacher = () => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom: "40px",
+                    marginBottom: "15px",
                 }}
             >
                 <Title
@@ -136,25 +195,41 @@ export const Teacher = () => {
                         margin: 0,
                     }}
                 >
-                    O’qituvchilar jadvali
+                    O'qituvchilar jadvali
                 </Title>
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
                     style={{
-                        color: "var(--breand-rang-2)",
+                        color: "var(--matn-rang-1)",
                         backgroundColor: "white",
                     }}
-                    onClick={handleAddStudent}
+                    onClick={handleAddTeacher}
                 >
                     Qo'shish
                 </Button>
             </Col>
-            <Table
+            <Table<ITeacher>
                 columns={columns}
                 dataSource={data?.data}
-                pagination={{ pageSize: data?.meta.studentCount }}
+                pagination={{
+                    current: page,
+                    pageSize: 10,
+                    total: data?.meta.teacherCount,
+                    onChange: (pageNumber) => setPage(pageNumber),
+                }}
+                rowKey="user_id"
             />
+            <Modal
+                title="Chiqish"
+                cancelText="Yo'q"
+                okText="Ha"
+                open={isModalOpen.open}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            >
+                <p>Rostanham {isModalOpen.user.name} ni o'chirmoqchimisiz.</p>
+            </Modal>
         </div>
     );
 };

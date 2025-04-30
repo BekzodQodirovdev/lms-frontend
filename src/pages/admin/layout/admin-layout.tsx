@@ -9,11 +9,13 @@ import {
     BellOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Input, Avatar, Typography, Button, Modal } from "antd";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo.svg";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { GetCookie } from "../../../config/cookie";
 import { UserT } from "../../../types/interface";
+import { CookiesEnum } from "../../../types/enum";
+import { useSearchStore } from "../../../store/useSearchStore";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -22,6 +24,8 @@ export const MainLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { setSearch } = useSearchStore();
 
     const [user, setUser] = useState({} as UserT);
     const navigate = useNavigate();
@@ -46,6 +50,24 @@ export const MainLayout = () => {
         setUser(userData);
     }, []);
 
+    const checkTokenExpiration = (token: string): boolean => {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            const exp = payload.exp * 1000;
+            return Date.now() >= exp;
+        } catch (error) {
+            console.error("Tokenni tahlil qilishda xatolik:", error);
+            return true;
+        }
+    };
+    const refreshToken = GetCookie(CookiesEnum.ACCESS_TOKEN);
+    const expire = checkTokenExpiration(refreshToken);
+
+    if (expire) {
+        logOut();
+        return <Navigate to="/login" replace />;
+    }
+
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -60,7 +82,14 @@ export const MainLayout = () => {
                         <img
                             src={logo}
                             alt="Logo"
-                            style={{ maxWidth: "100%", height: "32px" }}
+                            style={{
+                                maxWidth: "100%",
+                                height: "52px",
+                                cursor: "pointer",
+                            }}
+                            onClick={() =>
+                                navigate(user.role == "ADMIN" ? "/admin" : "/")
+                            }
                         />
                     </div>
                     <Menu
@@ -111,6 +140,9 @@ export const MainLayout = () => {
                         <Input.Search
                             placeholder="Qidiruv tizimi..."
                             style={{ maxWidth: 300 }}
+                            onChange={(e) =>
+                                setSearch({ name: e.target.value })
+                            }
                             allowClear
                         />
                         <div
@@ -159,7 +191,7 @@ export const MainLayout = () => {
                 onOk={handleOk}
                 onCancel={handleCancel}
             >
-                <p>Rostanham chiqmoqchimisiz!!!</p>
+                <p>Ishonchingiz komilmi?</p>
             </Modal>
         </>
     );

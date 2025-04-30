@@ -6,10 +6,12 @@ import { MainLayout } from "../pages/admin/layout/admin-layout";
 import { Students } from "../pages/students";
 import Dashboard from "../pages/admin/dashboard";
 import { AddStudentForm } from "../pages/students-new";
-import { Teacher } from "../pages/teachers";
-import { Groups } from "../pages/groups";
-import { Courses } from "../pages/courses";
 import { UpdateStudentForm } from "../pages/students-update";
+import { StudentDetail } from "../pages/student-detail";
+import { Teacher } from "../pages/teachers";
+import { TeacherDetail } from "../pages/teacher-detail";
+import { AddTeacherForm } from "../pages/teacher-new";
+import { UpdateTeacherForm } from "../pages/teacher-update";
 
 const Login = lazy(() => import("../pages/auth/login"));
 // const Dashboard = lazy(() => import("../pages/dashboard"));
@@ -39,6 +41,10 @@ export const routes: RouteT[] = [
                         element: <AddStudentForm />,
                     },
                     {
+                        path: "student-detail/:id",
+                        element: <StudentDetail />,
+                    },
+                    {
                         path: "students/:id",
                         element: <UpdateStudentForm />,
                     },
@@ -47,24 +53,48 @@ export const routes: RouteT[] = [
                         element: <Teacher />,
                     },
                     {
-                        path: "teachers/add",
-                        element: <Teacher />,
+                        path: "teacher/add",
+                        element: <AddTeacherForm />,
+                    },
+                    {
+                        path: "teacher-detail/:id",
+                        element: <TeacherDetail />,
+                    },
+                    {
+                        path: "teacher/:id",
+                        element: <UpdateTeacherForm />,
                     },
                     {
                         path: "groups",
-                        element: <Groups />,
+                        element: <p>group</p>,
                     },
                     {
                         path: "groups/add",
-                        element: <Groups />,
+                        element: <p>group create</p>,
+                    },
+                    {
+                        path: "group-detail/:id",
+                        element: <p>group detail</p>,
+                    },
+                    {
+                        path: "groups/:id",
+                        element: <p>group one</p>,
                     },
                     {
                         path: "courses",
-                        element: <Courses />,
+                        element: <p>courses</p>,
                     },
                     {
                         path: "courses/add",
-                        element: <Courses />,
+                        element: <p>courses create</p>,
+                    },
+                    {
+                        path: "course-detail/:id",
+                        element: <p>courses detail</p>,
+                    },
+                    {
+                        path: "course/:id",
+                        element: <p>courses one</p>,
                     },
                     {
                         path: "settings",

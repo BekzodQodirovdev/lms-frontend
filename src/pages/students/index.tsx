@@ -8,14 +8,16 @@ import {
     Typography,
     Image,
     Modal,
+    Popover,
 } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { useNavigate } from "react-router-dom";
 import useGetAllStudent from "./service/query/useGetAllStudent";
 import { useState } from "react";
 import { IStudetn } from "../../types/interface/student.interface";
 import { useDeleteStudent } from "./service/mutation/usedeleteStudent";
+import { EyeSvg } from "../../assets/eye-svgrepo-com";
 
 // const data = [
 //     {
@@ -68,7 +70,7 @@ export const Students = () => {
     console.log(data);
 
     const handleEditStudent = (key: string) => {
-        navigate(`/admin/students/${key}`);
+        navigate(`/admin/student-detail/${key}`);
     };
     const handleDeleteStudent = (id: string, name: string) => {
         setIsModalOpen({ open: true, user: { id, name } });
@@ -97,6 +99,8 @@ export const Students = () => {
         {
             title: "#",
             key: "key",
+            render: (_: any, __: IStudetn, index: number) =>
+                (page - 1) * 10 + index + 1,
         },
         {
             title: "Bolalar F.I.O",
@@ -133,22 +137,51 @@ export const Students = () => {
         {
             title: "Yashash joyi",
             dataIndex: "address",
-            key: "group",
+            key: "addres",
         },
         {
-            title: "Davomat",
-            dataIndex: "attendance",
-            key: "attendance",
-            render: (attended: boolean) => (
-                <Tag color={attended ? "green" : "red"}>
-                    {attended ? "✓" : "✕"}
-                </Tag>
+            title: "Gurux nomi",
+            key: "group",
+            render: (data: IStudetn) => (
+                <Typography.Text
+                    style={{
+                        fontSize: "18px",
+                    }}
+                >
+                    {data?.group_members[0]?.group?.name}
+                </Typography.Text>
             ),
         },
         {
             title: "To'lov",
             key: "payment",
-            render: () => <Button>To'lov</Button>,
+            render: (data: IStudetn) => {
+                const content = (
+                    <div>
+                        <p>
+                            To'lov:{" "}
+                            {
+                                data.PaymentForStudent[
+                                    data.PaymentForStudent.length - 1
+                                ]?.sum
+                            }
+                        </p>
+                        <p>
+                            To'lov turi:{" "}
+                            {
+                                data.PaymentForStudent[
+                                    data.PaymentForStudent.length - 1
+                                ]?.type
+                            }
+                        </p>
+                    </div>
+                );
+                return (
+                    <Popover content={content} title="Malumotlar">
+                        <Button>To'lov</Button>
+                    </Popover>
+                );
+            },
         },
         {
             title: "Imkoniyatlar",
@@ -156,7 +189,7 @@ export const Students = () => {
             render: (data: IStudetn) => (
                 <Space>
                     <Button
-                        icon={<EditOutlined />}
+                        icon={<EyeSvg />}
                         onClick={() => handleEditStudent(data.user_id)}
                     />
                     <Button
@@ -199,7 +232,7 @@ export const Students = () => {
                     type="primary"
                     icon={<PlusOutlined />}
                     style={{
-                        color: "var(--breand-rang-2)",
+                        color: "var(--matn-rang-1)",
                         backgroundColor: "white",
                     }}
                     onClick={handleAddStudent}
