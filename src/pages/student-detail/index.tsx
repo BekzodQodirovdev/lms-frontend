@@ -255,9 +255,12 @@ export const StudentDetail = () => {
                         style={{
                             border: "1px solid var(--qidiruv-tizimi-1)",
                             marginBottom: "15px",
+                            height: "220px",
+                            overflowX: "auto",
                         }}
                     >
                         <Table<IGroupMember>
+                            pagination={false}
                             columns={columnsGroup}
                             dataSource={data?.data.group_members}
                         />
@@ -267,9 +270,12 @@ export const StudentDetail = () => {
                         variant="borderless"
                         style={{
                             border: "1px solid var(--qidiruv-tizimi-1)",
+                            height: "220px",
+                            overflowX: "auto",
                         }}
                     >
                         <Table<IPaymentForStudent>
+                            pagination={false}
                             columns={columnsPayment}
                             dataSource={data?.data.PaymentForStudent}
                         />

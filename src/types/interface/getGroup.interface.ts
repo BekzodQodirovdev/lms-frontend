@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface IGetGroupInterface {
     status: number;
     message: string;
@@ -19,3 +21,12 @@ export interface IGroup {
 export interface IMeta {
     totalCount: number;
 }
+
+export type FieldTypeGroup = {
+    name: string;
+    description: string;
+    course_id: string;
+    teacher_id: string;
+    status: string;
+    start_date: string | Dayjs;
+};

@@ -2,10 +2,16 @@ import {
     Button,
     Card,
     Col,
+    Form,
     Image,
+    Input,
+    Modal,
+    notification,
     Row,
+    Select,
     Table,
     TableProps,
+    Tag,
     Typography,
 } from "antd";
 import Title from "antd/es/typography/Title";
@@ -20,6 +26,8 @@ import {
     IPaymentForTeacher,
     ITeacherGroup,
 } from "../../types/interface/teachers.interface";
+import { usePaymentTeacher } from "./service/mutation/postPayment";
+import { useState } from "react";
 
 ///////////////GROUP////////////////
 
@@ -69,6 +77,12 @@ const columnsPayment: TableProps<IPaymentForTeacher>["columns"] = [
         title: "To'lov turi",
         dataIndex: "type",
         key: "payType",
+        render: (type: string) =>
+            type == "CASH" ? (
+                <Tag color="green">NAQD</Tag>
+            ) : (
+                <Tag color="blue">UZCARD</Tag>
+            ),
     },
     {
         title: "Boshlangan sana",
@@ -82,18 +96,59 @@ const columnsPayment: TableProps<IPaymentForTeacher>["columns"] = [
 ///////////////////////////////
 
 export const TeacherDetail = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
+    const [api, contextHolder] = notification.useNotification();
+
     const { id } = useParams();
     const navigate = useNavigate();
-    if (!id) {
-        return "user not found";
-    }
-    const { data, isLoading } = useGetTeacherOne(id);
-    if (isLoading) {
-        return "Loading...";
-    }
-    console.log(data);
+
+    const { mutate } = usePaymentTeacher();
+    const { data, isLoading, refetch } = useGetTeacherOne(id!);
+
+    if (!id) return "user not found";
+    if (isLoading) return "Loading...";
+
+    const handlePayment = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        form.validateFields()
+            .then((values) => {
+                const payload = {
+                    ...values,
+                    teacher_id: id,
+                    sum: Number(values.sum),
+                };
+                mutate(payload, {
+                    onSuccess: () => {
+                        api.success({
+                            message: "Muvaffaqiyatli bajarildi",
+                            description: "To'lov muvaffaqiyatli qo'shildi",
+                        });
+                        setIsModalOpen(false);
+                        form.resetFields();
+                        refetch();
+                    },
+                    onError: () => {
+                        api.error({
+                            message: "Muvaffaqiyatsiz",
+                            description: "Xatolik yuz berdi",
+                        });
+                    },
+                });
+            })
+            .catch(() => {});
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        form.resetFields();
+    };
     return (
         <div>
+            {contextHolder}
             <Col
                 style={{
                     padding: "22px 20px 20px 20px",
@@ -129,7 +184,11 @@ export const TeacherDetail = () => {
                     >
                         Tahrirlash
                     </Button>
-                    <Button type="default" icon={<PaySvg />}>
+                    <Button
+                        type="default"
+                        icon={<PaySvg />}
+                        onClick={handlePayment}
+                    >
                         To'lov qilish
                     </Button>
                 </Row>
@@ -256,6 +315,9 @@ export const TeacherDetail = () => {
                         }}
                     >
                         <Table<ITeacherGroup>
+                            scroll={{ y: 200 }}
+                            sticky
+                            pagination={false}
                             columns={columnsGroup}
                             dataSource={data?.data.groups}
                         />
@@ -268,12 +330,52 @@ export const TeacherDetail = () => {
                         }}
                     >
                         <Table<IPaymentForTeacher>
+                            scroll={{ y: 250 }}
+                            sticky
+                            pagination={false}
                             columns={columnsPayment}
                             dataSource={data?.data.PaymentForTeacher}
                         />
                     </Card>
                 </Col>
             </Row>
+            <Modal
+                title="To'lov qilish"
+                visible={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Tasdiqlash"
+                cancelText="Bekor qilish"
+            >
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        label="To'lov turi"
+                        name="type"
+                        rules={[
+                            {
+                                required: true,
+                                message: "To'lov turini kiriting",
+                            },
+                        ]}
+                    >
+                        <Select placeholder="To'lov turini tanlang">
+                            <Select.Option value="CASH">Naqd</Select.Option>
+                            <Select.Option value="CREDIT_CARD">
+                                Karta
+                            </Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="To'lov summasi"
+                        name="sum"
+                        rules={[
+                            { required: true, message: "Summani kiriting" },
+                        ]}
+                    >
+                        <Input type="number" placeholder="Miqdorni kiriting" />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };

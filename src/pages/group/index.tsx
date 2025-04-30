@@ -6,26 +6,18 @@ import {
     Col,
     Spin,
     Typography,
-    Image,
     Modal,
-    Popover,
+    notification,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { useNavigate } from "react-router-dom";
-import useGetAllStudent from "./service/query/useGetAllStudent";
 import { useState } from "react";
-import { IStudetn } from "../../types/interface/student.interface";
-import { useDeleteStudent } from "./service/mutation/usedeleteStudent";
+import { useDeleteGroup } from "./service/mutation/usedeleteGroup";
 import { EyeSvg } from "../../assets/eye-svgrepo-com";
 import { useSearchStore } from "../../store/useSearchStore";
-
-interface IFilter {
-    gender?: string;
-    data_of_birth?: string;
-    groupId?: string;
-    fullname?: string;
-}
+import useGetAllGroups from "./service/query/useGetAllGroup";
+import { IGroup } from "../../types/interface/getGroup.interface";
 
 // const data = [
 //     {
@@ -45,10 +37,12 @@ interface IFilter {
 //         attendance: false,
 //     },
 // ];
-
-export const Students = () => {
+interface IFilter {
+    start_date: string | undefined;
+    status: string;
+}
+export const Group = () => {
     const navigate = useNavigate();
-    const [isFilterQuery, setFilterQuery] = useState<IFilter | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<{
         open: boolean;
         user: { id: string | null; name: string | null };
@@ -56,21 +50,22 @@ export const Students = () => {
         open: false,
         user: { id: null, name: null },
     });
-    const [page, setPage] = useState<number>(1);
-    const handleAddStudent = () => {
-        navigate("/admin/students/add");
-    };
     const { search } = useSearchStore();
+    const [isFilterQuery, setFilterQuery] = useState<IFilter | null>(null);
+    const [api, contextHolder] = notification.useNotification();
 
-    const { data, isLoading } = useGetAllStudent(
+    const [page, setPage] = useState<number>(1);
+    const handleAddGroup = () => {
+        navigate("/admin/group/add");
+    };
+    const { data, isLoading } = useGetAllGroups(
         page,
         10,
-        isFilterQuery?.gender,
-        isFilterQuery?.data_of_birth,
-        isFilterQuery?.groupId,
+        isFilterQuery?.start_date,
+        isFilterQuery?.status,
         search
     );
-    const { mutate: deleteStudent } = useDeleteStudent();
+    const { mutate: deleteGroup } = useDeleteGroup();
 
     if (isLoading)
         return (
@@ -87,22 +82,30 @@ export const Students = () => {
         );
     console.log(data);
 
-    const handleEditStudent = (key: string) => {
-        navigate(`/admin/student-detail/${key}`);
+    const handleEditGroup = (key: string) => {
+        navigate(`/admin/group-detail/${key}`);
     };
-    const handleDeleteStudent = (id: string, name: string) => {
+    const handleDeleteGroup = (id: string, name: string) => {
         setIsModalOpen({ open: true, user: { id, name } });
     };
 
     const handleOk = () => {
         console.log(isModalOpen);
         if (isModalOpen.user.id) {
-            deleteStudent(isModalOpen.user.id, {
+            deleteGroup(isModalOpen.user.id, {
                 onSuccess(data) {
                     console.log(data);
+                    api.success({
+                        message: "Muvaffaqiyatli",
+                        description: "Malumot o'chirildi",
+                    });
                 },
-                onError(err) {
-                    console.log("error ", err);
+                onError(err: any) {
+                    api.error({
+                        message: "Xatolik",
+                        description:
+                            err?.response?.data?.message || "Xatolik yuz berdi",
+                    });
                 },
             });
         }
@@ -117,103 +120,45 @@ export const Students = () => {
         {
             title: "#",
             key: "key",
-            render: (_: any, __: IStudetn, index: number) =>
+            render: (_: any, __: IGroup, index: number) =>
                 (page - 1) * 10 + index + 1,
         },
         {
-            title: "Bolalar F.I.O",
-            key: "full_name",
-            render: (student: IStudetn) => (
-                <Space>
-                    <Image
-                        src={student.images[0].url}
-                        alt="Img"
-                        width={36}
-                        height={36}
-                        style={{ borderRadius: "20px" }}
-                    />
-                    {student.full_name}
-                </Space>
-            ),
+            title: "Nomi",
+            dataIndex: "name",
+            key: "name",
         },
         {
-            title: "Tug'ilgan sana",
-            dataIndex: "data_of_birth",
-            key: "data_of_birth",
+            title: "Boshlangan sana",
+            dataIndex: "start_date",
+            key: "start_date",
             render: (date: string) => (
                 <Typography.Text>{date.slice(0, 10)}</Typography.Text>
             ),
         },
         {
-            title: "Jinsi",
-            dataIndex: "gender",
-            key: "gender",
+            title: "Holati",
+            dataIndex: "status",
+            key: "status",
             render: (gender: string) => (
-                <Tag color={gender === "MALE" ? "green" : "red"}>{gender}</Tag>
+                <Tag color={gender === "ACTIVE" ? "green" : "red"}>
+                    {gender}
+                </Tag>
             ),
-        },
-        {
-            title: "Yashash joyi",
-            dataIndex: "address",
-            key: "addres",
-        },
-        {
-            title: "Gurux nomi",
-            key: "group",
-            render: (data: IStudetn) => (
-                <Typography.Text
-                    style={{
-                        fontSize: "18px",
-                    }}
-                >
-                    {data?.group_members[0]?.group?.name}
-                </Typography.Text>
-            ),
-        },
-        {
-            title: "To'lov",
-            key: "payment",
-            render: (data: IStudetn) => {
-                const content = (
-                    <div>
-                        <p>
-                            To'lov:{" "}
-                            {
-                                data.PaymentForStudent[
-                                    data.PaymentForStudent.length - 1
-                                ]?.sum
-                            }
-                        </p>
-                        <p>
-                            To'lov turi:{" "}
-                            {
-                                data.PaymentForStudent[
-                                    data.PaymentForStudent.length - 1
-                                ]?.type
-                            }
-                        </p>
-                    </div>
-                );
-                return (
-                    <Popover content={content} title="Malumotlar">
-                        <Button>To'lov</Button>
-                    </Popover>
-                );
-            },
         },
         {
             title: "Imkoniyatlar",
             key: "actions",
-            render: (data: IStudetn) => (
+            render: (data: IGroup) => (
                 <Space>
                     <Button
                         icon={<EyeSvg />}
-                        onClick={() => handleEditStudent(data.user_id)}
+                        onClick={() => handleEditGroup(data.group_id)}
                     />
                     <Button
                         icon={<DeleteOutlined />}
                         onClick={() =>
-                            handleDeleteStudent(data.user_id, data.full_name)
+                            handleDeleteGroup(data.group_id, data.name)
                         }
                         danger
                     />
@@ -224,6 +169,7 @@ export const Students = () => {
 
     return (
         <div>
+            {contextHolder}
             <Col
                 style={{
                     padding: "22px 20px 20px 20px",
@@ -244,7 +190,7 @@ export const Students = () => {
                         margin: 0,
                     }}
                 >
-                    O’quvchilar jadvali
+                    O'qituvchilar jadvali
                 </Title>
                 <Button
                     type="primary"
@@ -253,18 +199,18 @@ export const Students = () => {
                         color: "var(--matn-rang-1)",
                         backgroundColor: "white",
                     }}
-                    onClick={handleAddStudent}
+                    onClick={handleAddGroup}
                 >
                     Qo'shish
                 </Button>
             </Col>
-            <Table<IStudetn>
+            <Table<IGroup>
                 columns={columns}
                 dataSource={data?.data}
                 pagination={{
                     current: page,
                     pageSize: 10,
-                    total: data?.meta.studentCount,
+                    total: data?.meta.totalCount,
                     onChange: (pageNumber) => setPage(pageNumber),
                 }}
                 rowKey="user_id"

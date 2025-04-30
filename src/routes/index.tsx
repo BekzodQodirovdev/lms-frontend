@@ -12,6 +12,10 @@ import { Teacher } from "../pages/teachers";
 import { TeacherDetail } from "../pages/teacher-detail";
 import { AddTeacherForm } from "../pages/teacher-new";
 import { UpdateTeacherForm } from "../pages/teacher-update";
+import { Group } from "../pages/group";
+import { AddGroupForm } from "../pages/group-new";
+import { GroupDetail } from "../pages/group-detail";
+import { UpdateGroupForm } from "../pages/group-update";
 
 const Login = lazy(() => import("../pages/auth/login"));
 // const Dashboard = lazy(() => import("../pages/dashboard"));
@@ -66,26 +70,26 @@ export const routes: RouteT[] = [
                     },
                     {
                         path: "groups",
-                        element: <p>group</p>,
+                        element: <Group />,
                     },
                     {
-                        path: "groups/add",
-                        element: <p>group create</p>,
+                        path: "group/add",
+                        element: <AddGroupForm />,
                     },
                     {
                         path: "group-detail/:id",
-                        element: <p>group detail</p>,
+                        element: <GroupDetail />,
                     },
                     {
-                        path: "groups/:id",
-                        element: <p>group one</p>,
+                        path: "group/:id",
+                        element: <UpdateGroupForm />,
                     },
                     {
                         path: "courses",
                         element: <p>courses</p>,
                     },
                     {
-                        path: "courses/add",
+                        path: "course/add",
                         element: <p>courses create</p>,
                     },
                     {

@@ -44,7 +44,7 @@ export const AddTeacherForm = () => {
     const onFinish = (values: FieldTypeTeacher) => {
         const user: ICreateTeacherParams = {
             img_url: fileList[0]?.url,
-            full_name: `${values.firstname} ${values.lastname} ${values.surname}`,
+            full_name: `${values.firstname.trim()} ${values.lastname.trim()} ${values.surname.trim()}`,
             password: values.password,
             username: values.username,
             gender: values.gender,

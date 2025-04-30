@@ -49,7 +49,7 @@ export const UpdateTeacherForm = () => {
     const onFinish = (values: FieldTypeTeacher) => {
         const updatedUser: ICreateTeacherParams = {
             img_url: fileList[0]?.url,
-            full_name: `${values.firstname} ${values.lastname} ${values.surname}`,
+            full_name: `${values.firstname.trim()} ${values.lastname.trim()} ${values.surname.trim()}`,
             password: values.password,
             username: values.username,
             gender: values.gender,
@@ -64,7 +64,7 @@ export const UpdateTeacherForm = () => {
                     message: "Muvaffaqiyatli yangilandi",
                     description: "O'qituvchi ma'lumotlari saqlandi",
                 });
-                navigate("/admin/teachers");
+                navigate(`/admin/teacher-detail/${id}`);
             },
             onError: (error: any) => {
                 console.error("Xatolik:", error);
@@ -193,7 +193,9 @@ export const UpdateTeacherForm = () => {
                     </Title>
                     <div style={{ display: "flex", gap: "16px" }}>
                         <Button
-                            onClick={() => navigate("/admin/teachers")}
+                            onClick={() =>
+                                navigate(`/admin/teacher-detail/${id}`)
+                            }
                             icon={<CloseOutlined />}
                             style={{
                                 borderColor: "var(--qizil-rang-1)",
