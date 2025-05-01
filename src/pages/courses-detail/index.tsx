@@ -42,7 +42,7 @@ export const CoursesDetail = () => {
     const { data, isLoading } = useGetOneCoursesDetail(id!);
     const { data: geteditData } = useGetOneCoursesDetailEdit(id!);
 
-    const { mutate, isPending } = useEditcourses(id!);
+    const { mutate } = useEditcourses(id!);
 
     const [api, contextHolder] = notification.useNotification();
 
@@ -55,8 +55,8 @@ export const CoursesDetail = () => {
         form.setFieldsValue({
             name: geteditData?.name || "",
             description: geteditData?.description || "",
-            duration: geteditData?.duration || 0,
-            status: geteditData?.status || "ACTIVE",
+            duration: Number(geteditData?.duration) || 0,
+            status: (geteditData?.status as "ACTIVE" | "INACTIVE") || "ACTIVE",
         });
         setIsModalOpen(true);
     };
@@ -65,7 +65,7 @@ export const CoursesDetail = () => {
         form.validateFields().then((values) => {
             console.log("Updated values: ", values);
             mutate(values, {
-                onSuccess: (data) => {
+                onSuccess: () => {
                     api.success({
                         message: "Kurs ma'lumotlari yangilandi",
                     });

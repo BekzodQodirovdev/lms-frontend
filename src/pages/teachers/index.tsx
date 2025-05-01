@@ -52,7 +52,7 @@ export const Teacher = () => {
         user: { id: null, name: null },
     });
     const { search } = useSearchStore();
-    const [isFilterQuery, setFilterQuery] = useState<IFilter | null>(null);
+    const [isFilterQuery, _] = useState<IFilter | null>(null);
 
     const [page, setPage] = useState<number>(1);
     const handleAddTeacher = () => {

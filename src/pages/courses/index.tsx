@@ -6,9 +6,7 @@ import {
     Col,
     Spin,
     Typography,
-    Image,
     Modal,
-    Popover,
     notification,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
@@ -27,7 +25,7 @@ interface IFilter {
 
 export const Courses = () => {
     const navigate = useNavigate();
-    const [isFilterQuery, setFilterQuery] = useState<IFilter | undefined>(
+    const [isFilterQuery, _] = useState<IFilter | undefined>(
         undefined
     );
     const [isModalOpen, setIsModalOpen] = useState<{

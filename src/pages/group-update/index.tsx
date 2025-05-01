@@ -11,9 +11,8 @@ import {
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { useNavigate, useParams } from "react-router-dom";
-import { UploadFile } from "antd/es/upload";
 import { FieldTypeGroup } from "../../types/interface/getGroup.interface";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUpdateGroup } from "./mutation/useCreateGroup";
 import { useGetAllTeachers } from "./query/getAllTeacher";
 import { useGetAllCoursesWGroup } from "./query/getAllCourse";
@@ -26,7 +25,6 @@ export const UpdateGroupForm = () => {
     const { id } = useParams();
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const [api, contextHolder] = notification.useNotification();
     const { data: getOneGroup } = useGetOneGroup(id!);
@@ -48,7 +46,6 @@ export const UpdateGroupForm = () => {
                     message: "Yaxshi natija",
                     description: "Group muvaffaqiyatli qo'shildi",
                 });
-                setFileList([]);
                 form.resetFields();
                 navigate(`/admin/group-detail/${id}`);
             },

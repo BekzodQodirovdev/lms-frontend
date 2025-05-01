@@ -182,7 +182,12 @@ export const GroupDetail = () => {
                             <Table<IGroupMember>
                                 pagination={false}
                                 rowKey="group_members_id"
-                                dataSource={group?.group_members}
+                                dataSource={group?.group_members?.map(
+                                    (member) => ({
+                                        ...member,
+                                        group: group,
+                                    })
+                                )}
                                 scroll={{ y: 300 }}
                                 sticky
                                 columns={[

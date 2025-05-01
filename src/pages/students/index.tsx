@@ -48,7 +48,7 @@ interface IFilter {
 
 export const Students = () => {
     const navigate = useNavigate();
-    const [isFilterQuery, setFilterQuery] = useState<IFilter | null>(null);
+    const [isFilterQuery, _] = useState<IFilter | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<{
         open: boolean;
         user: { id: string | null; name: string | null };

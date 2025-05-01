@@ -6,7 +6,7 @@ import { GetCookie } from "./config/cookie";
 import { Spin } from "antd";
 
 const renderRoutes = (routes: (RouteT | ChildrenT)[]) => {
-    return routes.map((route, index) => {
+    return routes.map((route: any, index: any) => {
         if (route?.index) {
             return <Route key={index} index element={route.element} />;
         }
@@ -27,6 +27,8 @@ const App = () => {
         const user = GetCookie("user");
         if (!accessToken && !refreshToken && !user) {
             navigate("/login");
+        } else if (user.role == "ADMIN") {
+            navigate("/admin");
         }
     }, []);
     return (
