@@ -1,56 +1,38 @@
-import {
-    Form,
-    Input,
-    Button,
-    Select,
-    DatePicker,
-    Row,
-    Col,
-    notification,
-} from "antd";
+import { Form, Input, Button, Select, Row, Col, notification } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UploadFile } from "antd/es/upload";
-import { FieldTypeGroup } from "../../types/interface/getGroup.interface";
-import { useEffect, useState } from "react";
-import { useUpdateGroup } from "./mutation/useCreateGroup";
-import { useGetAllTeachers } from "./query/getAllTeacher";
-import { useGetAllCoursesWGroup } from "./query/getAllCourse";
-import { useGetOneGroup } from "./query/getOneGroup";
-import dayjs from "dayjs";
+import { useState } from "react";
+import { useCreateCourse, FieldTypeCourse } from "./mutation/useCreateCourse";
 
 const { Option } = Select;
 
-export const UpdateGroupForm = () => {
-    const { id } = useParams();
+export const AddCourseForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+    console.log(fileList);
     const [api, contextHolder] = notification.useNotification();
-    const { data: getOneGroup } = useGetOneGroup(id!);
-    const { mutate: updateGroup, isPending: groupPan } = useUpdateGroup(id!);
-    const { data: getTeacher } = useGetAllTeachers();
-    const { data: getCourses } = useGetAllCoursesWGroup();
 
-    const onFinish = (values: FieldTypeGroup) => {
-        const group: Omit<FieldTypeGroup, "start_date"> = {
+    const { mutate: createCourse, isPending: coursePan } = useCreateCourse();
+
+    const onFinish = (values: FieldTypeCourse) => {
+        const course: FieldTypeCourse = {
             name: values.name,
             description: values.description,
             status: values.status,
-            course_id: values.course_id,
-            teacher_id: values.teacher_id,
+            duration: +values.duration,
         };
-        updateGroup(group, {
+        createCourse(course, {
             onSuccess: () => {
+                navigate("/admin/courses");
                 api.success({
                     message: "Yaxshi natija",
-                    description: "Group muvaffaqiyatli qo'shildi",
+                    description: "Course muvaffaqiyatli qo'shildi",
                 });
                 setFileList([]);
                 form.resetFields();
-                navigate(`/admin/group-detail/${id}`);
             },
             onError: (error: any) => {
                 console.error("Xatolik:", error);
@@ -61,19 +43,6 @@ export const UpdateGroupForm = () => {
             },
         });
     };
-
-    useEffect(() => {
-        if (getOneGroup?.data) {
-            form.setFieldsValue({
-                name: getOneGroup.data.name,
-                description: getOneGroup.data.description,
-                status: getOneGroup.data.status,
-                course_id: getOneGroup.data.course_id,
-                start_date: dayjs(getOneGroup.data.start_date),
-                teacher_id: getOneGroup.data.teacher_id,
-            });
-        }
-    }, [getOneGroup?.data, form]);
 
     return (
         <div style={{ padding: "0 20px" }}>
@@ -103,9 +72,7 @@ export const UpdateGroupForm = () => {
                     </Title>
                     <div style={{ display: "flex", gap: "16px" }}>
                         <Button
-                            onClick={() =>
-                                navigate(`/admin/group-detail/${id}`)
-                            }
+                            onClick={() => navigate("/admin/courses")}
                             icon={<CloseOutlined />}
                             style={{
                                 borderColor: "var(--qizil-rang-1)",
@@ -118,7 +85,7 @@ export const UpdateGroupForm = () => {
                             Bekor qilish
                         </Button>
                         <Button
-                            loading={groupPan}
+                            loading={coursePan}
                             icon={<CheckOutlined />}
                             htmlType="submit"
                             style={{
@@ -136,16 +103,16 @@ export const UpdateGroupForm = () => {
                 <Row gutter={[16, 16]}>
                     <Col span={8}>
                         <Form.Item
-                            label="Guruh nomi"
+                            label="Course nomi"
                             name="name"
                             rules={[
                                 {
                                     required: true,
-                                    message: "Iltimos, guruh nomini kiriting",
+                                    message: "Iltimos, Course nomini kiriting",
                                 },
                             ]}
                         >
-                            <Input placeholder="Masalan: Frontend 101" />
+                            <Input placeholder="Masalan: Dasturlash" />
                         </Form.Item>
                     </Col>
 
@@ -160,7 +127,7 @@ export const UpdateGroupForm = () => {
                                 },
                             ]}
                         >
-                            <Input.TextArea placeholder="Guruh haqida qisqacha ma'lumot" />
+                            <Input.TextArea placeholder="Course haqida qisqacha ma'lumot" />
                         </Form.Item>
                     </Col>
 
@@ -181,66 +148,19 @@ export const UpdateGroupForm = () => {
                             </Select>
                         </Form.Item>
                     </Col>
-
                     <Col span={8}>
                         <Form.Item
-                            label="Kurs ID"
-                            name="course_id"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Iltimos, kurs ID sini tanlang",
-                                },
-                            ]}
-                        >
-                            <Select placeholder="Kursni tanlang">
-                                {getCourses?.data.map((item) => (
-                                    <Option value={item.course_id}>
-                                        {item.name}
-                                    </Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                        <Form.Item
-                            label="Boshlanish sanasi"
-                            name="start_date"
+                            label="Davomiyligi"
+                            name="duration"
                             rules={[
                                 {
                                     required: true,
                                     message:
-                                        "Iltimos, boshlanish sanasini tanlang",
+                                        "Iltimos, Course davomiyligini kiriting",
                                 },
                             ]}
                         >
-                            <DatePicker
-                                format="YYYY-MM-DD"
-                                style={{ width: "100%" }}
-                                placeholder="Guruh boshlanish sanasi"
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                        <Form.Item
-                            label="O'qituvchi ID"
-                            name="teacher_id"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Iltimos, o'qituvchini tanlang",
-                                },
-                            ]}
-                        >
-                            <Select placeholder="O'qituvchini tanlang">
-                                {getTeacher?.data.map((item) => (
-                                    <Option value={item.user_id}>
-                                        {item.full_name}
-                                    </Option>
-                                ))}
-                            </Select>
+                            <Input placeholder="101" />
                         </Form.Item>
                     </Col>
                 </Row>

@@ -67,21 +67,6 @@ export const Group = () => {
     );
     const { mutate: deleteGroup } = useDeleteGroup();
 
-    if (isLoading)
-        return (
-            <div
-                style={{
-                    height: "100vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <Spin />
-            </div>
-        );
-    console.log(data);
-
     const handleEditGroup = (key: string) => {
         navigate(`/admin/group-detail/${key}`);
     };
@@ -190,7 +175,7 @@ export const Group = () => {
                         margin: 0,
                     }}
                 >
-                    O'qituvchilar jadvali
+                    Guruhlar jadvali
                 </Title>
                 <Button
                     type="primary"
@@ -204,17 +189,30 @@ export const Group = () => {
                     Qo'shish
                 </Button>
             </Col>
-            <Table<IGroup>
-                columns={columns}
-                dataSource={data?.data}
-                pagination={{
-                    current: page,
-                    pageSize: 10,
-                    total: data?.meta.totalCount,
-                    onChange: (pageNumber) => setPage(pageNumber),
-                }}
-                rowKey="user_id"
-            />
+            {isLoading ? (
+                <div
+                    style={{
+                        height: "80vh",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Spin />
+                </div>
+            ) : (
+                <Table<IGroup>
+                    columns={columns}
+                    dataSource={data?.data}
+                    pagination={{
+                        current: page,
+                        pageSize: 10,
+                        total: data?.meta.totalCount,
+                        onChange: (pageNumber) => setPage(pageNumber),
+                    }}
+                    rowKey="user_id"
+                />
+            )}
             <Modal
                 title="Chiqish"
                 cancelText="Yo'q"

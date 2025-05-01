@@ -67,21 +67,6 @@ export const Teacher = () => {
     );
     const { mutate: deleteTeacher } = useDeleteTeacher();
 
-    if (isLoading)
-        return (
-            <div
-                style={{
-                    height: "100vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <Spin />
-            </div>
-        );
-    console.log(data);
-
     const handleEditTeacher = (key: string) => {
         navigate(`/admin/teacher-detail/${key}`);
     };
@@ -209,17 +194,30 @@ export const Teacher = () => {
                     Qo'shish
                 </Button>
             </Col>
-            <Table<ITeacher>
-                columns={columns}
-                dataSource={data?.data}
-                pagination={{
-                    current: page,
-                    pageSize: 10,
-                    total: data?.meta.teacherCount,
-                    onChange: (pageNumber) => setPage(pageNumber),
-                }}
-                rowKey="user_id"
-            />
+            {isLoading ? (
+                <div
+                    style={{
+                        height: "70vh",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Spin />
+                </div>
+            ) : (
+                <Table<ITeacher>
+                    columns={columns}
+                    dataSource={data?.data}
+                    pagination={{
+                        current: page,
+                        pageSize: 10,
+                        total: data?.meta.teacherCount,
+                        onChange: (pageNumber) => setPage(pageNumber),
+                    }}
+                    rowKey="user_id"
+                />
+            )}
             <Modal
                 title="Chiqish"
                 cancelText="Yo'q"

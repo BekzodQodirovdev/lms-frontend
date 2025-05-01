@@ -16,7 +16,7 @@ import { FieldTypeGroup } from "../../types/interface/getGroup.interface";
 import { useState } from "react";
 import { useCreateGroup } from "./mutation/useCreateGroup";
 import { useGetAllTeachers } from "./query/getAllTeacher";
-import { useGetAllCourses } from "./query/getAllCourse";
+import { useGetAllCoursesWGroupNew } from "./query/getAllCourse";
 
 const { Option } = Select;
 
@@ -29,10 +29,10 @@ export const AddGroupForm = () => {
 
     const { mutate: createGroup, isPending: groupPan } = useCreateGroup();
     const { data: getTeacher } = useGetAllTeachers();
-    const { data: getCourses } = useGetAllCourses();
+    const { data: getCourses } = useGetAllCoursesWGroupNew();
 
     const onFinish = (values: FieldTypeGroup) => {
-        const user: FieldTypeGroup = {
+        const group: FieldTypeGroup = {
             name: values.name,
             description: values.description,
             status: values.status,
@@ -44,7 +44,7 @@ export const AddGroupForm = () => {
                     : values.start_date,
             teacher_id: values.teacher_id,
         };
-        createGroup(user, {
+        createGroup(group, {
             onSuccess: () => {
                 api.success({
                     message: "Yaxshi natija",

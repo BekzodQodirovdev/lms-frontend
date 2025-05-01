@@ -9,46 +9,27 @@ import {
     Image,
     Modal,
     Popover,
+    notification,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { useNavigate } from "react-router-dom";
-import useGetAllStudent from "./service/query/useGetAllStudent";
 import { useState } from "react";
-import { IStudetn } from "../../types/interface/student.interface";
-import { useDeleteStudent } from "./service/mutation/usedeleteStudent";
+import { useDeletecourses } from "./service/mutation/usedeleteCourses";
 import { EyeSvg } from "../../assets/eye-svgrepo-com";
 import { useSearchStore } from "../../store/useSearchStore";
+import { useGetAllCourses } from "./service/query/useGetAllCourses";
+import { ICourse } from "../../types/interface/getCourserOne.interface";
 
 interface IFilter {
-    gender?: string;
-    data_of_birth?: string;
-    groupId?: string;
-    fullname?: string;
+    status: "ACTIVE" | "INACTIVE";
 }
 
-// const data = [
-//     {
-//         key: "1",
-//         name: "Sultonov Shokirjon Tursinjon o'g'li",
-//         birthday: "15.05.2021",
-//         gender: "O'g'il bola",
-//         group: "15-gurux",
-//         attendance: true,
-//     },
-//     {
-//         key: "2",
-//         name: "Nodirova Shodiya Tursinjon qizi",
-//         birthday: "15.05.2021",
-//         gender: "Qiz bola",
-//         group: "15-gurux",
-//         attendance: false,
-//     },
-// ];
-
-export const Students = () => {
+export const Courses = () => {
     const navigate = useNavigate();
-    const [isFilterQuery, setFilterQuery] = useState<IFilter | null>(null);
+    const [isFilterQuery, setFilterQuery] = useState<IFilter | undefined>(
+        undefined
+    );
     const [isModalOpen, setIsModalOpen] = useState<{
         open: boolean;
         user: { id: string | null; name: string | null };
@@ -57,34 +38,39 @@ export const Students = () => {
         user: { id: null, name: null },
     });
     const [page, setPage] = useState<number>(1);
-    const handleAddStudent = () => {
-        navigate("/admin/students/add");
+    const handleAddCourse = () => {
+        navigate("/admin/course/add");
     };
     const { search } = useSearchStore();
 
-    const { data, isLoading } = useGetAllStudent(
+    const { data, isLoading, refetch } = useGetAllCourses(
         page,
         10,
-        isFilterQuery?.gender,
-        isFilterQuery?.data_of_birth,
-        isFilterQuery?.groupId,
-        search
+        search,
+        isFilterQuery?.status
     );
-    const { mutate: deleteStudent } = useDeleteStudent();
+    const { mutate: deleteCourses } = useDeletecourses();
 
-    const handleEditStudent = (key: string) => {
-        navigate(`/admin/student-detail/${key}`);
+    const [api, contextHolder] = notification.useNotification();
+
+    const handleEditCourse = (key: string) => {
+        navigate(`/admin/course-detail/${key}`);
     };
-    const handleDeleteStudent = (id: string, name: string) => {
+    const handleDeleteCourse = (id: string, name: string) => {
         setIsModalOpen({ open: true, user: { id, name } });
     };
 
     const handleOk = () => {
         console.log(isModalOpen);
         if (isModalOpen.user.id) {
-            deleteStudent(isModalOpen.user.id, {
+            deleteCourses(isModalOpen.user.id, {
                 onSuccess(data) {
                     console.log(data);
+                    refetch();
+                    api.success({
+                        message: "Muvaffaqiyatli",
+                        description: "Course o'chirildi",
+                    });
                 },
                 onError(err) {
                     console.log("error ", err);
@@ -102,103 +88,45 @@ export const Students = () => {
         {
             title: "#",
             key: "key",
-            render: (_: any, __: IStudetn, index: number) =>
+            render: (_: any, __: ICourse, index: number) =>
                 (page - 1) * 10 + index + 1,
         },
         {
-            title: "Bolalar F.I.O",
-            key: "full_name",
-            render: (student: IStudetn) => (
-                <Space>
-                    <Image
-                        src={student.images[0].url}
-                        alt="Img"
-                        width={36}
-                        height={36}
-                        style={{ borderRadius: "20px" }}
-                    />
-                    {student.full_name}
-                </Space>
+            title: "Nomi",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "Davomiligi",
+            dataIndex: "duration",
+            key: "duration",
+            render: (duration: string) => (
+                <Typography.Text>{duration} kun</Typography.Text>
             ),
         },
         {
-            title: "Tug'ilgan sana",
-            dataIndex: "data_of_birth",
-            key: "data_of_birth",
-            render: (date: string) => (
-                <Typography.Text>{date.slice(0, 10)}</Typography.Text>
+            title: "Holati",
+            dataIndex: "status",
+            key: "status",
+            render: (status: string) => (
+                <Tag color={status === "ACTIVE" ? "green" : "red"}>
+                    {status}
+                </Tag>
             ),
-        },
-        {
-            title: "Jinsi",
-            dataIndex: "gender",
-            key: "gender",
-            render: (gender: string) => (
-                <Tag color={gender === "MALE" ? "green" : "red"}>{gender}</Tag>
-            ),
-        },
-        {
-            title: "Yashash joyi",
-            dataIndex: "address",
-            key: "addres",
-        },
-        {
-            title: "Gurux nomi",
-            key: "group",
-            render: (data: IStudetn) => (
-                <Typography.Text
-                    style={{
-                        fontSize: "18px",
-                    }}
-                >
-                    {data?.group_members[0]?.group?.name}
-                </Typography.Text>
-            ),
-        },
-        {
-            title: "To'lov",
-            key: "payment",
-            render: (data: IStudetn) => {
-                const content = (
-                    <div>
-                        <p>
-                            To'lov:{" "}
-                            {
-                                data.PaymentForStudent[
-                                    data.PaymentForStudent.length - 1
-                                ]?.sum
-                            }
-                        </p>
-                        <p>
-                            To'lov turi:{" "}
-                            {
-                                data.PaymentForStudent[
-                                    data.PaymentForStudent.length - 1
-                                ]?.type
-                            }
-                        </p>
-                    </div>
-                );
-                return (
-                    <Popover content={content} title="Malumotlar">
-                        <Button>To'lov</Button>
-                    </Popover>
-                );
-            },
         },
         {
             title: "Imkoniyatlar",
             key: "actions",
-            render: (data: IStudetn) => (
+            render: (data: ICourse) => (
                 <Space>
                     <Button
                         icon={<EyeSvg />}
-                        onClick={() => handleEditStudent(data.user_id)}
+                        onClick={() => handleEditCourse(data.course_id)}
                     />
                     <Button
                         icon={<DeleteOutlined />}
                         onClick={() =>
-                            handleDeleteStudent(data.user_id, data.full_name)
+                            handleDeleteCourse(data.course_id, data.name)
                         }
                         danger
                     />
@@ -209,6 +137,7 @@ export const Students = () => {
 
     return (
         <div>
+            {contextHolder}
             <Col
                 style={{
                     padding: "22px 20px 20px 20px",
@@ -229,7 +158,7 @@ export const Students = () => {
                         margin: 0,
                     }}
                 >
-                    O’quvchilar jadvali
+                    Kurslar jadvali
                 </Title>
                 <Button
                     type="primary"
@@ -238,7 +167,7 @@ export const Students = () => {
                         color: "var(--matn-rang-1)",
                         backgroundColor: "white",
                     }}
-                    onClick={handleAddStudent}
+                    onClick={handleAddCourse}
                 >
                     Qo'shish
                 </Button>
@@ -255,13 +184,13 @@ export const Students = () => {
                     <Spin />
                 </div>
             ) : (
-                <Table<IStudetn>
+                <Table<ICourse>
                     columns={columns}
                     dataSource={data?.data}
                     pagination={{
                         current: page,
                         pageSize: 10,
-                        total: data?.meta.studentCount,
+                        total: data?.meta.total,
                         onChange: (pageNumber) => setPage(pageNumber),
                     }}
                     rowKey="user_id"

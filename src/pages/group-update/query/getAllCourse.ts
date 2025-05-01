@@ -1,10 +1,10 @@
 import { request } from "../../../config/axios-instance";
 import { useQuery } from "@tanstack/react-query";
-import { IGetCourseInterface } from "../../../types/interface/getCourser.interface";
+import { IGetCourseInterface } from "../../../types/interface/getCourserOne.interface";
 
-export const useGetAllCourses = () => {
+export const useGetAllCoursesWGroup = () => {
     return useQuery({
-        queryKey: ["allCourse"],
+        queryKey: ["allCourseWGroup"],
         queryFn: () =>
             request
                 .get<IGetCourseInterface>("courses/all")
