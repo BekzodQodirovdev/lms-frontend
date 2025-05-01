@@ -2,8 +2,15 @@ import {
     Button,
     Card,
     Col,
+    Form,
     Image,
+    Input,
+    List,
+    Modal,
+    notification,
     Row,
+    Select,
+    Spin,
     Table,
     TableProps,
     Typography,
@@ -20,6 +27,9 @@ import {
     IGroupMember,
     IPaymentForStudent,
 } from "../../types/interface/student.interface";
+import { usePaymentStudent } from "./service/mutation/usePaymentStudent";
+import { useState } from "react";
+import useGetAllGroups from "../group/service/query/useGetAllGroup";
 
 ///////////////GROUP////////////////
 
@@ -86,16 +96,74 @@ const columnsPayment: TableProps<IPaymentForStudent>["columns"] = [
 export const StudentDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
+    const [api, contextHolder] = notification.useNotification();
+    const [searchUser, setSearchUser] = useState("");
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+
+    const { data, isLoading, refetch } = useGetUserOne(id!);
+    const { data: getAllGroup } = useGetAllGroups(
+        1,
+        1000,
+        undefined,
+        undefined,
+        searchUser
+    );
+    const { mutate } = usePaymentStudent();
     if (!id) {
         return "user not found";
     }
-    const { data, isLoading } = useGetUserOne(id);
     if (isLoading) {
         return "Loading...";
     }
+    const handlePayment = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        form.validateFields()
+            .then((values) => {
+                if (!selectedGroupId) {
+                    api.info({ message: "Gruhni tanlang" });
+                    return;
+                }
+                const payload = {
+                    ...values,
+                    student_id: id,
+                    sum: Number(values.sum),
+                    group_id: selectedGroupId,
+                };
+                mutate(payload, {
+                    onSuccess: () => {
+                        api.success({
+                            message: "Muvaffaqiyatli bajarildi",
+                            description: "To'lov muvaffaqiyatli qo'shildi",
+                        });
+                        setIsModalOpen(false);
+                        form.resetFields();
+                        refetch();
+                    },
+                    onError: () => {
+                        api.error({
+                            message: "Muvaffaqiyatsiz",
+                            description: "Xatolik yuz berdi",
+                        });
+                    },
+                });
+            })
+            .catch(() => {});
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        setSearchUser("");
+        setSelectedGroupId("");
+        form.resetFields();
+    };
     console.log(data);
     return (
         <div>
+            {contextHolder}
             <Col
                 style={{
                     padding: "22px 20px 20px 20px",
@@ -131,7 +199,11 @@ export const StudentDetail = () => {
                     >
                         Tahrirlash
                     </Button>
-                    <Button type="default" icon={<PaySvg />}>
+                    <Button
+                        type="default"
+                        icon={<PaySvg />}
+                        onClick={handlePayment}
+                    >
                         To'lov qilish
                     </Button>
                 </Row>
@@ -255,11 +327,13 @@ export const StudentDetail = () => {
                         style={{
                             border: "1px solid var(--qidiruv-tizimi-1)",
                             marginBottom: "15px",
-                            height: "220px",
-                            overflowX: "auto",
+                            overflowX: "hidden",
                         }}
                     >
                         <Table<IGroupMember>
+                            style={{ height: "220px" }}
+                            scroll={{ y: 180 }}
+                            sticky
                             pagination={false}
                             columns={columnsGroup}
                             dataSource={data?.data.group_members}
@@ -270,11 +344,14 @@ export const StudentDetail = () => {
                         variant="borderless"
                         style={{
                             border: "1px solid var(--qidiruv-tizimi-1)",
-                            height: "220px",
-                            overflowX: "auto",
+
+                            overflowX: "hidden",
                         }}
                     >
                         <Table<IPaymentForStudent>
+                            style={{ height: "240px" }}
+                            scroll={{ y: 200 }}
+                            sticky
                             pagination={false}
                             columns={columnsPayment}
                             dataSource={data?.data.PaymentForStudent}
@@ -282,6 +359,85 @@ export const StudentDetail = () => {
                     </Card>
                 </Col>
             </Row>
+            <Modal
+                title="To'lov qilish"
+                visible={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Tasdiqlash"
+                cancelText="Bekor qilish"
+            >
+                <Form form={form} layout="vertical">
+                    <Input
+                        placeholder="O‘quvchi ismini yozing"
+                        value={searchUser}
+                        onChange={(e) => setSearchUser(e.target.value)}
+                    />
+                    <div
+                        style={{
+                            marginTop: 10,
+                            maxHeight: 200,
+                            height: "200px",
+                            border: "1px solid var(--qidiruv-tizimi-1)",
+                            borderRadius: "5px",
+                            overflowY: "auto",
+                            padding: "10px",
+                        }}
+                    >
+                        {getAllGroup?.data ? (
+                            <List
+                                dataSource={getAllGroup.data}
+                                renderItem={(item) => (
+                                    <List.Item
+                                        style={{
+                                            backgroundColor:
+                                                selectedGroupId ===
+                                                item.group_id
+                                                    ? "#e6f7ff"
+                                                    : "",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                            setSelectedGroupId(item.group_id)
+                                        }
+                                    >
+                                        {item.name} ({item.description})
+                                    </List.Item>
+                                )}
+                            />
+                        ) : (
+                            <Spin />
+                        )}
+                    </div>
+
+                    <Form.Item
+                        label="To'lov turi"
+                        name="type"
+                        rules={[
+                            {
+                                required: true,
+                                message: "To'lov turini kiriting",
+                            },
+                        ]}
+                    >
+                        <Select placeholder="To'lov turini tanlang">
+                            <Select.Option value="CASH">Naqd</Select.Option>
+                            <Select.Option value="CREDIT_CARD">
+                                Karta
+                            </Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="To'lov summasi"
+                        name="sum"
+                        rules={[
+                            { required: true, message: "Summani kiriting" },
+                        ]}
+                    >
+                        <Input type="number" placeholder="Miqdorni kiriting" />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
