@@ -75,7 +75,6 @@ export const Teacher = () => {
     };
 
     const handleOk = () => {
-        console.log(isModalOpen);
         if (isModalOpen.user.id) {
             deleteTeacher(isModalOpen.user.id, {
                 onSuccess(data) {

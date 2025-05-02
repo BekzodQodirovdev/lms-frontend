@@ -136,7 +136,6 @@ export const UpdateTeacherForm = () => {
         return <div>Loading...</div>;
     }
 
-    console.log(teacherDataUpdate);
 
     if (!teacherDataUpdate) {
         return (

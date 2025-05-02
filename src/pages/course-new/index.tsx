@@ -11,8 +11,8 @@ const { Option } = Select;
 export const AddCourseForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-    console.log(fileList);
+    const [_, setFileList] = useState<UploadFile[]>([]);
+
     const [api, contextHolder] = notification.useNotification();
 
     const { mutate: createCourse, isPending: coursePan } = useCreateCourse();

@@ -24,7 +24,6 @@ import {
     ICreateTeacherParams,
     useCreateTeacher,
 } from "./mutation/useCreateTeacher";
-import { useGetAllGroup } from "./query/getGrup";
 
 const { Option } = Select;
 
@@ -32,14 +31,12 @@ export const AddTeacherForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    console.log(fileList);
+
     const [api, contextHolder] = notification.useNotification();
 
     const { mutate: uploadMutate, isPending: createImgPeading } =
         useUploadImgStudent();
     const { mutate: createTeacher, isPending: studentPan } = useCreateTeacher();
-    const { data: groupData } = useGetAllGroup();
-    console.log(groupData);
 
     const onFinish = (values: FieldTypeTeacher) => {
         const user: ICreateTeacherParams = {

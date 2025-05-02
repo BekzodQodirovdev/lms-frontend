@@ -160,7 +160,6 @@ export const StudentDetail = () => {
         setSelectedGroupId("");
         form.resetFields();
     };
-    console.log(data);
     return (
         <div>
             {contextHolder}

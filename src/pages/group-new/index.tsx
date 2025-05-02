@@ -23,8 +23,8 @@ const { Option } = Select;
 export const AddGroupForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-    console.log(fileList);
+    const [_, setFileList] = useState<UploadFile[]>([]);
+    
     const [api, contextHolder] = notification.useNotification();
 
     const { mutate: createGroup, isPending: groupPan } = useCreateGroup();

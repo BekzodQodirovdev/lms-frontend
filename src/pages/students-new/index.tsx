@@ -30,12 +30,12 @@ export const AddStudentForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    console.log(fileList);
+    
     const { mutate: uploadMutate, isPending: createImgPeading } =
         useUploadImgStudent();
     const { mutate: createStudent, isPending: studentPan } = useCreateStudent();
     const { data: groupData } = useGetAllGroup();
-    console.log(groupData);
+    
 
     const generateId = () => Math.random().toString(36).substring(2, 7);
 

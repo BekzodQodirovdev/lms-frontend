@@ -30,7 +30,6 @@ export const GroupDetail = () => {
         searchUser
     );
 
-    console.log(data);
     if (isLoading) return "Loading...";
 
     const group = data?.data;

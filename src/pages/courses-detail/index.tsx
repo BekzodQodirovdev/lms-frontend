@@ -51,7 +51,6 @@ export const CoursesDetail = () => {
     };
 
     const openEditModal = () => {
-        console.log(geteditData);
         form.setFieldsValue({
             name: geteditData?.name || "",
             description: geteditData?.description || "",
@@ -63,7 +62,6 @@ export const CoursesDetail = () => {
 
     const handleOk = () => {
         form.validateFields().then((values) => {
-            console.log("Updated values: ", values);
             mutate(values, {
                 onSuccess: () => {
                     api.success({

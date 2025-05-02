@@ -151,8 +151,6 @@ const Dashboard = () => {
             : ""
     );
 
-    console.log(data);
-
     return (
         <>
             <Col

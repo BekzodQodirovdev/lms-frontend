@@ -75,11 +75,9 @@ export const Group = () => {
     };
 
     const handleOk = () => {
-        console.log(isModalOpen);
         if (isModalOpen.user.id) {
             deleteGroup(isModalOpen.user.id, {
-                onSuccess(data) {
-                    console.log(data);
+                onSuccess() {
                     api.success({
                         message: "Muvaffaqiyatli",
                         description: "Malumot o'chirildi",

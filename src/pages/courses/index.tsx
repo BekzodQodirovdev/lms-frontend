@@ -25,9 +25,7 @@ interface IFilter {
 
 export const Courses = () => {
     const navigate = useNavigate();
-    const [isFilterQuery, _] = useState<IFilter | undefined>(
-        undefined
-    );
+    const [isFilterQuery, _] = useState<IFilter | undefined>(undefined);
     const [isModalOpen, setIsModalOpen] = useState<{
         open: boolean;
         user: { id: string | null; name: string | null };
@@ -59,11 +57,9 @@ export const Courses = () => {
     };
 
     const handleOk = () => {
-        console.log(isModalOpen);
         if (isModalOpen.user.id) {
             deleteCourses(isModalOpen.user.id, {
-                onSuccess(data) {
-                    console.log(data);
+                onSuccess() {
                     refetch();
                     api.success({
                         message: "Muvaffaqiyatli",
@@ -71,7 +67,10 @@ export const Courses = () => {
                     });
                 },
                 onError(err) {
-                    console.log("error ", err);
+                    api.error({
+                        message: "Error",
+                        description: err.message,
+                    });
                 },
             });
         }

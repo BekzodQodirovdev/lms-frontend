@@ -80,7 +80,6 @@ export const Students = () => {
     };
 
     const handleOk = () => {
-        console.log(isModalOpen);
         if (isModalOpen.user.id) {
             deleteStudent(isModalOpen.user.id, {
                 onSuccess(data) {

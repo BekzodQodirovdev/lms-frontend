@@ -31,7 +31,6 @@ const Login = () => {
     const loginHandler: FormProps<LoginT>["onFinish"] = (data) => {
         mutate(data, {
             onSuccess(data: LoginResponse) {
-                console.log(data);
                 logIn({ user: data.user, data: data.data });
                 if (data.user.role === UserRole.ADMIN) {
                     navigate("/admin", { replace: true });
