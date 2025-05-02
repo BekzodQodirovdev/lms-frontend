@@ -27,7 +27,9 @@ const App = () => {
         const user = GetCookie("user");
         if (!accessToken && !refreshToken && !user) {
             navigate("/login");
-        } else if (user.role == "ADMIN") {
+        } else if (user?.role == "ADMIN") {
+            navigate("/admin");
+        } else {
             navigate("/admin");
         }
     }, []);
