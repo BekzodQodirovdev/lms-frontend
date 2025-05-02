@@ -135,14 +135,14 @@ export const UpdateStudentForm = () => {
                     gender: studentData?.data.gender,
                     address: studentData?.data.address,
                     phone_number: studentData?.data.phone_number,
-                    groupId: studentData?.data.group_members[0].group_id,
+                    groupId: studentData?.data.group_members[0]?.group_id,
                     paymentType:
                         studentData?.data.PaymentForStudent[
                             studentData?.data.PaymentForStudent.length - 1
-                        ].type,
+                        ]?.type,
                     sum: studentData?.data.PaymentForStudent[
                         studentData?.data.PaymentForStudent.length - 1
-                    ].sum,
+                    ]?.sum,
                 }}
             >
                 <Row
