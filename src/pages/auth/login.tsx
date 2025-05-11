@@ -141,6 +141,29 @@ const Login = () => {
                         >
                             Kirish
                         </Button>
+                        <Button
+                            disabled={isPending}
+                            type="default"
+                            onClick={() =>
+                                loginHandler({
+                                    username: "jhondoe007",
+                                    password: "jhondoe007!A",
+                                })
+                            }
+                            style={{
+                                marginTop: "10px",
+                                width: "100%",
+                                backgroundColor: "#ffffff",
+                                color: "#7D41ED",
+                                border: "2px solid #7D41ED",
+                                borderRadius: "8px",
+                                paddingTop: "20px",
+                                paddingBottom: "20px",
+                                fontWeight: 600,
+                            }}
+                        >
+                            Login as Demo Admin
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>
